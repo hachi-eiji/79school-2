@@ -1,11 +1,42 @@
-きのこ vs たけのこ
+適当掲示板
 ========
 
 79schoolの課題
 
-![kinoko_vs_takenoko](https://dl.dropboxusercontent.com/u/39477503/kinoko_vs_takenoko.png)
+* GitHubのアカウントでログイン
+* 記事をmarkdownで書けるようにする
+* タグ検索あり
 
-* Twitter APIをつかって検索
-* 結果保存(ユーザはTwitterのアカウント使う)
-* クライアントからsocket.ioでサーバ通信 -> 差分取得する
-* [Google Chart](https://developers.google.com/chart/) を使ってグラフを作る
+データモデル
+===
+
+### user ユーザ情報格納
+
+```
+id: 111
+loginId: hachi-eiji
+avatarUrl: http://www.example.com
+```
+
+
+### item 記事
+
+```
+id: userIdとtimeをhashしたもの
+ownerId: 1111
+title: 記事タイトル
+body: 本文(markdown)
+likes: [1,2,3]
+prviate: boolean
+tags:["daily", "foo", "javascript", "テスト"] // 英語のみの場合は全部小文字
+```
+
+### reply 返信記事
+
+```
+id: reply用のid itemIdと時間をhash化したもの
+itemId: itemId
+body: 本文
+```
+
+
