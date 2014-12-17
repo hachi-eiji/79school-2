@@ -1,0 +1,19 @@
+{
+  "name": "kinoko-takenoko-wars",
+  "version": "0.0.1",
+  "description": "きのこ vs たけのこ ========",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:hachi-eiji/79school-2.git"
+  },
+  "author": "Eiji Hachiya",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hachi-eiji/79school-2/issues"
+  },
+  "homepage": "https://github.com/hachi-eiji/79school-2"
+}
