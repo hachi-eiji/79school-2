@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/hachi-eiji/79school-2/issues"
   },
-  "homepage": "https://github.com/hachi-eiji/79school-2"
+  "homepage": "https://github.com/hachi-eiji/79school-2",
+  "dependencies": {
+    "express": "^4.10.6",
+    "mongoskin": "^1.4.4",
+    "socket.io": "^1.2.1"
+  },
+  "devDependencies": {
+    "expect.js": "^0.3.1",
+    "mocha": "^2.0.1"
+  }
 }
