@@ -1,7 +1,15 @@
 doctype html
 html
   head
+    meta(http-equiv="content-type" content="text/html; charset=UTF-8")
     title= title
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css')
+    link(rel='stylesheet', href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css')
+    script(src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js")
     link(rel='stylesheet', href='/stylesheets/style.css')
   body
-    block content
+    block header
+      include include/menu
+    .container
+      .row
+        block content

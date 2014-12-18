@@ -29,7 +29,7 @@ ownerId: 1111
 title: 記事タイトル
 body: 本文(markdown)
 likes: [1,2,3]
-prviate: boolean
+published: boolean
 tags:["daily", "foo", "javascript", "テスト"] // 英語のみの場合は全部小文字
 ```
 

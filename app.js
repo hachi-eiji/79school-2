@@ -4,12 +4,25 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var http = require('http');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+var models = require('./models');
+// database config
+var mongoose = require('mongoose');
+var db = mongoose.connect(process.env.NODE_MONGO_URL || 'mongodb://@localhost:27017/test', {safe: true});
+
+var routes = require('./routes');
 
 var app = express();
 
+// set model
+app.use(function (req, res, next) {
+  req.models = models;
+  return next();
+});
+
+app.locals.title = "聞いた？"; // application title.
+app.set('port', process.env.PORT || 3000);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -22,8 +35,12 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', routes);
-app.use('/users', users);
+app.get('/', routes.index);
+//app.use('/items/:id', routes.item.show);
+//app.get('/items/new', routes.item.showCreate);
+app.post('/items/create', routes.item.register);
+//app.get('/items/:id/edit', routes.item.showEdit);
+//app.post('/items/:id/edit', routes.item.update);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -57,4 +74,10 @@ app.use(function(err, req, res, next) {
 });
 
 
-module.exports = app;
+if (require.main === module) {
+  http.createServer(app).listen(app.get('port'), function () {
+    console.log('start server..');
+  });
+} else {
+  module.exports = app;
+}
