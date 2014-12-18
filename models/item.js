@@ -8,7 +8,7 @@ var schema = new mongoose.Schema({
   },
   ownerId: {
     type: Number,
-    require: true
+    required: true
   },
   title: {
     type: String,
@@ -16,14 +16,22 @@ var schema = new mongoose.Schema({
   },
   body: {
     type: String,
-    require: true
+    required: true
   },
   likes: [{type: Number, default: []}],
   published: {
     type: Boolean,
     default: false
   },
-  tags: [String]
+  tags: [String],
+  createAt: {
+    type: Number,
+    default: Date.now()
+  },
+  updateAt: {
+    type: Number,
+    default: Date.now()
+  }
 });
 
 module.exports = mongoose.model('Item', schema);

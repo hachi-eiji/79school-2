@@ -2,6 +2,4 @@
 var debug = require('debug')('79school');
 var app = require('../app');
 
-var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
-});
+app.startup();
