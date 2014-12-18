@@ -41,12 +41,20 @@ exports.register = function (req, res, next) {
   var id = md5.digest('hex');
 
   var body = req.body;
+  var tags = body.tags || [];
+
+  var searchTags = [];
+  for (var i = 0; i < tags.length; i++) {
+    searchTags.push(tags[i].toLowerCase());
+  }
+
   var item = {
     id: id,
     ownerId: userId,
     title: body.title,
     body: body.body,
-    tags: body.tags
+    tags: tags,
+    searchTags: searchTags
   };
 
   Item.create(item, function (err) {

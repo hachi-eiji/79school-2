@@ -6,7 +6,7 @@ var port = app.port;
 var startup = app.startup;
 var shutdown = app.shutdown;
 
-var Item = require('../models/item');
+var Item = require('../models').Item;
 
 describe('server', function () {
   this.timeout(5000);
@@ -26,10 +26,9 @@ describe('server', function () {
     });
     it('should create item object', function (done) {
       var data = {
-        ownerId: 1000,
         title: 'title',
         body: 'body',
-        tags: ['ab', 'b', 'テスト']
+        tags: ['Ab', 'b', 'テスト']
       };
       superagent
         .post('http://localhost:' + port + '/items/create')
@@ -43,9 +42,13 @@ describe('server', function () {
             expect(item.title).to.eql('title');
             expect(item.body).to.eql('body');
             expect(item.tags).to.have.length(3);
-            expect(item.tags).to.contain('ab');
+            expect(item.tags).to.contain('Ab');
             expect(item.tags).to.contain('b');
             expect(item.tags).to.contain('テスト');
+            expect(item.searchTags).to.have.length(3);
+            expect(item.searchTags).to.contain('ab');
+            expect(item.searchTags).to.contain('b');
+            expect(item.searchTags).to.contain('テスト');
             done();
           });
         });

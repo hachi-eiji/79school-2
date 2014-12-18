@@ -24,6 +24,7 @@ var schema = new mongoose.Schema({
     default: false
   },
   tags: [String],
+  searchTags: [String],
   createAt: {
     type: Number,
     default: Date.now()

@@ -30,7 +30,10 @@ title: 記事タイトル
 body: 本文(markdown)
 likes: [1,2,3]
 published: boolean
-tags:["daily", "foo", "javascript", "テスト"] // 英語のみの場合は全部小文字
+tags:["daily", "foo", "javascript", "テスト"] 
+searchTag:["daily", "foo", "javascript", "テスト"] // 検索用タグ
+createAt: 日付 Numberで格納
+updateAt: 日付 Numberで格納
 ```
 
 ### reply 返信記事
