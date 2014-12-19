@@ -35,4 +35,17 @@ var schema = new mongoose.Schema({
   }
 });
 
+/**
+ * 検索用static method.
+ * @param {Number} limit  取得する件数
+ * @param {Number} offset 取得開始位置
+ * @param {Object} query  取得するための検索条件.
+ * @param {Function} callback
+ */
+schema.statics.search = function (limit, offset, query, callback) {
+  //this.find(query).skip(offset).limit(limit).exec(callback);
+  this.find(query).skip(offset).limit(limit).exec(callback);
+  //this.find().skip(offset).limit(limit).exec(callback);
+};
+
 module.exports = mongoose.model('Item', schema);

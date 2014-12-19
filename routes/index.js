@@ -1,28 +1,55 @@
 'use strict';
 exports.item = require('./item');
 exports.user = require('./user');
+var Item = require('../models').Item;
 
 exports.index = function (req, res, next) {
-  res.render('index', {timeLine: getTimeLine()});
+  getTimeLine(50, 0, {}, function (err, timeLine) {
+    if (err) {
+      return next(err);
+    }
+    res.render('index', {timeLine: timeLine});
+  });
 };
 
-function getTimeLine() {
-  var timeLine = [];
-  for (var i = 0; i < 10; i++) {
-    var item = {
-      id: 'id',
-      owner: {
-        id: 2,
-        loginId: 'hachi_eiji',
-        avatarUrl: 'https://avatars.githubusercontent.com/u/995846?v=3'
-      },
-      title: '俺がmongoだ',
-      body: '俺がもんごですよ',
-      likeCount: 10,
-      tags: ['日報', 'ほげ'],
-      createdAt: '2014-01-12 00:00:00'
-    };
-    timeLine.push(item);
-  }
-  return timeLine;
+
+/**
+ * データを取得.
+ * @param {Number} limit  取得する件数
+ * @param {Number} offset 取得開始位置
+ * @param {Object} query  取得するための検索条件.
+ * @param {Function} callback
+ */
+function getTimeLine(limit, offset, query, callback) {
+  offset = offset || 0;
+  limit = limit || 50;
+  query = query || {};
+
+  Item.search(limit, offset, query, function (err, items) {
+    if (err) {
+      if (callback) {
+        callback(err, []);
+      }
+    }
+    var timeLine = [];
+    for (var i = 0; i < items.length; i++) {
+      var item = items[i];
+      timeLine.push({
+        id: item.id,
+        owner: {
+          id: item.ownerId,
+          loginId: 'hachi_eiji',
+          avatarUrl: 'https://avatars.githubusercontent.com/u/995846?v=3'
+        },
+        title: item.title,
+        body: item.body,
+        likeCount: item.likes.length,
+        tags: item.tags,
+        createAt: new Date(item.createAt)
+      });
+    }
+    if (callback) {
+      callback(null, timeLine);
+    }
+  });
 }
