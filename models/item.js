@@ -43,9 +43,7 @@ var schema = new mongoose.Schema({
  * @param {Function} callback
  */
 schema.statics.search = function (limit, offset, query, callback) {
-  //this.find(query).skip(offset).limit(limit).exec(callback);
   this.find(query).skip(offset).limit(limit).exec(callback);
-  //this.find().skip(offset).limit(limit).exec(callback);
 };
 
 module.exports = mongoose.model('Item', schema);
