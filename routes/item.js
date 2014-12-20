@@ -21,7 +21,7 @@ exports.show = function (req, res, next) {
  * @param next
  */
 exports.showCreate = function (req, res, next) {
-  // NOP
+  res.render('item/new');
 };
 
 /**
@@ -51,6 +51,7 @@ exports.register = function (req, res, next) {
   var item = {
     id: id,
     ownerId: userId,
+    owner: req.session.user._id,
     title: body.title,
     body: body.body,
     tags: tags,

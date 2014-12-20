@@ -9,17 +9,21 @@ nav.navbar.navbar-default(role="navigation")
           span.icon-bar
           span.icon-bar
       a.navbar-brand(href="#")
-        | 聞いた？
+        | きいて
     .collapse.navbar-collapse#bs-example-navbar-collapse-1
       form.navbar-form.navbar-left(role="search")
         .form-group
-          input.form-control(type="text",placeholder="Search")
+          input.form-control(type="text",placeholder="まだ未実装だお")
         button.btn.btn-default(type="submit")
           | Submit
       ul.nav.navbar-nav.navbar-right
+        if(user)
+          li
+            a(href="/items/new")
+              | 新規作成
         li
-          a(href="#")
-            | 新規作成
-        li
-          a(href='https://github.com/login/oauth/authorize?client_id=' + githubClientId + '&scope=user')
-            | GitHubでLogin
+          if(!user)
+            a(href='https://github.com/login/oauth/authorize?client_id=' + githubClientId + '&scope=user')
+              | GitHubでLogin
+          else
+            a(href='#')= 'ようこそ ' + user.loginId

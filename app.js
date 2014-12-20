@@ -37,6 +37,13 @@ app.use(cookieParser('test'));
 app.use(session({secret: 'test'}));
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(function (req, res, next) {
+  if (req.session && req.session.user) {
+    res.locals.user = req.session.user;
+  }
+  next();
+});
+
 // URL mapping
 app.get('/', routes.index);
 app.get('/items/new', routes.item.showCreate);

@@ -38,8 +38,8 @@ function getTimeLine(limit, offset, query, callback) {
         id: item.id,
         owner: {
           id: item.ownerId,
-          loginId: 'hachi_eiji',
-          avatarUrl: 'https://avatars.githubusercontent.com/u/995846?v=3'
+          loginId: item.owner.loginId,
+          avatarUrl: item.owner.avatarUrl
         },
         title: item.title,
         body: item.body,

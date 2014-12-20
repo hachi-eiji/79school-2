@@ -9,6 +9,10 @@ exports.create = function (req, res, next) {
 };
 
 exports.gitHubAuthCallback = function (req, res, next) {
+  var referer = req.headers['referer'] || '/';
+  if (req.session && req.session.user) {
+    res.redirect(referer);
+  }
   gitHubApi.getUser(req.query.code, function (err, gitHubUser) {
     if (err) {
       return next(err);
@@ -31,11 +35,11 @@ exports.gitHubAuthCallback = function (req, res, next) {
             return next(err);
           }
           req.session.user = user;
-          res.status(200).end();
+          res.redirect(referer);
         });
       } else {
         req.session.user = user;
-        res.status(200).end();
+        res.redirect(referer);
       }
     });
   });
@@ -43,22 +47,26 @@ exports.gitHubAuthCallback = function (req, res, next) {
 
 // 多分本当はわけたほうがいいよね.
 exports.debugLogin = function (req, res, next) {
-  req.session.user = {
-    id: 1
-  };
-  res.status(200).end();
-};
-
-exports.debugCreate = function (req, res, next) {
-  User.create({
-    id: 1,
-    loginId: 'hachi_eiji',
-    avatarUrl: 'https://avatars.githubusercontent.com/u/995846?v=3'
-  }, function (err, user) {
+  User.findOne({id: 1}, function (err, user) {
     if (err) {
       return next(err);
     }
-    req.session.user = user;
-    res.status(200).end();
+    if(user) {
+      req.session.user = user;
+      res.status(200).end();
+    } else {
+      User.create({
+        id: 1,
+        loginId: 'hachi_eiji',
+        avatarUrl: 'https://avatars.githubusercontent.com/u/995846?v=3',
+        name: 'test'
+      }, function (err, user) {
+        if (err) {
+          return next(err);
+        }
+        req.session.user = user;
+        res.status(200).end();
+      });
+    }
   });
 };

@@ -36,7 +36,7 @@ describe('server', function () {
         .set('Cookie', cookie)
         .end(function (res) {
           expect(res.status).to.eql(200);
-          Item.find({ownerId: 1}, function (err, items) {
+          Item.find({ownerId: 1}).populate('owner').exec(function (err, items) {
             var item = items[0];
             expect(item.ownerId).to.eql(1);
             expect(item.title).to.eql('title');
