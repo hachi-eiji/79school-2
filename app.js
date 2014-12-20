@@ -11,6 +11,7 @@ var models = require('./models');
 var mongoose = require('mongoose');
 var db = mongoose.connect(process.env.NODE_MONGO_URL || 'mongodb://@localhost:27017/test', {safe: true});
 var routes = require('./routes');
+var config = require('./libs').config;
 var app = express();
 
 // set model
@@ -20,6 +21,7 @@ app.use(function (req, res, next) {
 });
 
 app.locals.title = "聞いた？"; // application title.
+app.locals.githubClientId = config.gitHubAuth.client_id;
 
 app.set('port', process.env.PORT || 3000);
 // view engine setup
@@ -42,6 +44,11 @@ app.post('/items/create', routes.item.register);
 app.get('/items/:id/edit', routes.item.showEdit);
 app.post('/items/:id/edit', routes.item.update);
 app.use('/items/:id', routes.item.show);
+
+// auth
+app.use('/auth/github/callback', routes.user.githubAuthCallback);
+
+// debug
 app.use('/debug/login', routes.user.debugLogin);
 
 // catch 404 and forward to error handler

@@ -17,9 +17,9 @@ nav.navbar.navbar-default(role="navigation")
         button.btn.btn-default(type="submit")
           | Submit
       ul.nav.navbar-nav.navbar-right
-        li.active
+        li
           a(href="#")
             | 新規作成
         li
-          a(href="#")
-            | Login
+          a(href='https://github.com/login/oauth/authorize?client_id=' + githubClientId + '&scope=user')
+            | GitHubでLogin

@@ -16,6 +16,10 @@ var schema = new mongoose.Schema({
       unique: true
     }
   },
+  name: {
+    type: String,
+    required: true
+  },
   avatarUrl : String,
   createAt: {
     type: Number,
