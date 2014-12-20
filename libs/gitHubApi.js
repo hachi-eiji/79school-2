@@ -50,13 +50,21 @@ exports.getAccessToken = function (code, cb) {
   };
   var req = https.request(option, function (res) {
     res.setEncoding('utf-8');
+    if (res.statusCode >= 400) {
+      cb(new Error('status code is ' + res.statusCode));
+    }
     var responseData = '';
     res.on('data', function (chunk) {
       responseData += chunk;
     });
     res.on('end', function () {
       if (cb) {
-        cb(null, JSON.parse(responseData).access_token);
+        var json = JSON.parse(responseData);
+        if (!json.error) {
+          cb(null, json.access_token);
+        } else {
+          cb(new Error(json.error));
+        }
       }
     });
   });
@@ -90,13 +98,19 @@ function getUser(accessToken, cb) {
     }
   }, function (res) {
     res.setEncoding('utf-8');
+    var statusCode = res.statusCode;
     var userData = '';
     res.on('data', function (chunk) {
       userData += chunk;
     });
     res.on('end', function () {
       if (cb) {
-        cb(null, JSON.parse(userData));
+        var json = JSON.parse(userData);
+        if (statusCode >= 400) {
+          cb(new Error(json.message));
+        } else {
+          cb(null, json);
+        }
       }
     });
   }).on('error', function (err) {
