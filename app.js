@@ -46,7 +46,7 @@ app.post('/items/:id/edit', routes.item.update);
 app.use('/items/:id', routes.item.show);
 
 // auth
-app.use('/auth/github/callback', routes.user.githubAuthCallback);
+app.use('/auth/github/callback', routes.user.gitHubAuthCallback);
 
 // debug
 app.use('/debug/login', routes.user.debugLogin);
