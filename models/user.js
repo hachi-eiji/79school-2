@@ -4,11 +4,17 @@ var mongoose = require('mongoose');
 var schema = new mongoose.Schema({
   id: {
     type: Number,
-    required: true
+    required: true,
+    index: {
+      unique: true
+    }
   },
   loginId:{
     type: String,
-    required: true
+    required: true,
+    index: {
+      unique: true
+    }
   },
   avatarUrl : String,
   createAt: {
