@@ -20,7 +20,7 @@ app.use(function (req, res, next) {
   return next();
 });
 
-app.locals.title = "聞いた？"; // application title.
+app.locals.title = "きいて"; // application title.
 app.locals.githubClientId = config.gitHubAuth.client_id;
 
 app.set('port', process.env.PORT || 3000);
