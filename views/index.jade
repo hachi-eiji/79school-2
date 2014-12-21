@@ -4,20 +4,23 @@ block content
   .col-md-12(role="main")
     ul.list-group
       each value, index in timeLine
-          // start item
-          li.list-group-item
-            .media
-              a.media-left(href="#")
-                img(src=value.owner.avatarUrl width="64px" height="64px")
-              .media-body
-                h4.media-heading
-                  a(href="/item/" + value.id)= value.title
-                .text-muted
-                  each tagName, tagIndex in value.tags
-                      span.label.label-default= tagName
-                .text
-                    span.text(style="margin-right:5px")
-                      small= value.createAt +" "+ value.owner.loginId
-                    span.text
-                      small.glyphicon.glyphicon-star(area-hidden="true")= "x" + value.likeCount
-          // end item
+        // start item
+        li.list-group-item
+          .media
+            a.media-left(href="#")
+              img(src=value.owner.avatarUrl width="64px" height="64px")
+            .media-body
+              h4.media-heading
+                a(href="/item/" + value.id)= value.title
+                button.btn.btn-link.btn-xs.preview(data-id=value.id)
+                  small.glyphicon.glyphicon-circle-arrow-right(area-hidden="true")
+                    | preview
+              .text-muted
+                each tagName, tagIndex in value.tags
+                  span.label.label-default= tagName
+              .text
+                span.text(style="margin-right:5px")
+                  small= value.createAt + " " + value.owner.loginId
+                span.text
+                  small.glyphicon.glyphicon-star(area-hidden="true")= "x" + value.likeCount
+        // end item
