@@ -2,6 +2,7 @@
 exports.item = require('./item');
 exports.user = require('./user');
 var Item = require('../models').Item;
+var dateformat = require('dateformat');
 
 exports.index = function (req, res, next) {
   getTimeLine(50, 0, {}, function (err, timeLine) {
@@ -45,7 +46,7 @@ function getTimeLine(limit, offset, query, callback) {
         body: item.body,
         likeCount: item.likes.length,
         tags: item.tags,
-        createAt: new Date(item.createAt)
+        createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd')
       });
     }
     if (callback) {

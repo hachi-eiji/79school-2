@@ -11,16 +11,16 @@ block content
               img(src=value.owner.avatarUrl width="64px" height="64px")
             .media-body
               h4.media-heading
-                a(href="/item/" + value.id)= value.title
-                button.btn.btn-link.btn-xs.preview(data-id=value.id)
-                  small.glyphicon.glyphicon-circle-arrow-right(area-hidden="true")
-                    | preview
+                a(href="/items/" + value.id)= value.title
+                //button.btn.btn-link.btn-xs.preview(data-id=value.id)
+                //  small.glyphicon.glyphicon-circle-arrow-right(area-hidden="true")
+                //    | preview
               .text-muted
                 each tagName, tagIndex in value.tags
                   span.label.label-default= tagName
               .text
                 span.text(style="margin-right:5px")
-                  small= value.createAt + " " + value.owner.loginId
+                  small= value.owner.loginId + 'が' + value.createAt + "に投稿"
                 span.text
                   small.glyphicon.glyphicon-star(area-hidden="true")= "x" + value.likeCount
         // end item

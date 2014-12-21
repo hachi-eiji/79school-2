@@ -1,0 +1,11 @@
+extends ../layout
+
+block content
+  .panel.panel-default
+    .panel-heading
+      .panel-title= item.title
+      .tags
+        each tagName, index in item.tags
+          span.label.label-default= tagName
+      .creator= item.owner.loginId + 'が' + item.createAt + 'に投稿'
+    .panel-body!= item.body

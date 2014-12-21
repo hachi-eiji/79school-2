@@ -40,7 +40,8 @@ block content
   script.
     $(function(){
       marked.setOptions({
-        gfm:true
+        gfm: true,
+        breaks: true
       });
       setInterval(function(){
         $('#show-text').html(marked($('#body').val()));

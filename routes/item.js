@@ -1,6 +1,8 @@
 'use strict';
 var Item = require('../models').Item;
 var crypto = require('crypto');
+var marked = require('marked');
+var dateformat = require('dateformat');
 
 /**
  * アイテムを表示する.
@@ -10,7 +12,15 @@ var crypto = require('crypto');
  * @public
  */
 exports.show = function (req, res, next) {
-  // NOP
+  getItem(req.params.id, function (err, item) {
+    if (err) {
+      return next(err);
+    }
+    if (!item) {
+      return res.status(404).end();
+    }
+    res.render('item/show', {item: item});
+  });
 };
 
 
@@ -86,3 +96,30 @@ exports.showEdit = function (req, res, next) {
 exports.update = function (req, res, next) {
 
 };
+
+
+function getItem(id, cb) {
+  Item.findItem(id, function (err, item) {
+    if (err) {
+      cb(err);
+    }
+    if (!item) {
+      cb(null, null);
+    }
+    marked.setOptions({
+      gfm: true,
+      breaks: true
+    });
+    var data = {
+      id: item.id,
+      owner: item.owner,
+      ownerId: item.ownerId,
+      title: item.title,
+      body: marked(item.body),
+      tags: item.tags,
+      createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd'),
+      updateAt: dateformat(new Date(item.updateAt), 'yyyy/mm/dd')
+    };
+    cb(null, data);
+  });
+}

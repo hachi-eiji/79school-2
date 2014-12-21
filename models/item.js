@@ -55,4 +55,8 @@ schema.statics.search = function (limit, offset, query, callback) {
   this.find(query).populate('owner').sort({updateAt: 'desc'}).skip(offset).limit(limit).exec(callback);
 };
 
+schema.statics.findItem = function (id, callback) {
+  this.findOne({id: id}).populate('owner').exec(callback);
+};
+
 module.exports = mongoose.model('Item', schema);
