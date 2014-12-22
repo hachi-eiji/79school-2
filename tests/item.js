@@ -7,6 +7,7 @@ var startup = app.startup;
 var shutdown = app.shutdown;
 
 var Item = require('../models').Item;
+var User = require('../models').User
 
 describe('server', function () {
   this.timeout(5000);
@@ -35,12 +36,12 @@ describe('server', function () {
         .send(data)
         .set('Cookie', cookie)
         .end(function (res) {
-          expect(res.status).to.eql(200);
+          expect(res.status).to.equal(200);
           Item.find({ownerId: 1}).populate('owner').exec(function (err, items) {
             var item = items[0];
-            expect(item.ownerId).to.eql(1);
-            expect(item.title).to.eql('title');
-            expect(item.body).to.eql('body');
+            expect(item.ownerId).to.equal(1);
+            expect(item.title).to.equal('title');
+            expect(item.body).to.equal('body');
             expect(item.tags).to.have.length(3);
             expect(item.tags).to.contain('Ab');
             expect(item.tags).to.contain('b');
@@ -52,6 +53,39 @@ describe('server', function () {
             done();
           });
         });
+    });
+  });
+
+  describe('get item', function () {
+    it('should get item object', function (done) {
+      var createAt = new Date(2014, 11, 1);
+      var updateAt = new Date(2014, 11, 2);
+      User.findOne({id: 1}, function (err, user) {
+        var item = {
+          id: '1',
+          ownerId: 1,
+          owner: user._id,
+          title: 'test title',
+          body: 'test body',
+          tags: ['foo', 'bar'],
+          searchTags: ['foo', 'bar'],
+          createAt: createAt.getTime(),
+          updateAt: updateAt.getTime()
+        };
+        Item.create(item, function (err, item) {
+          superagent
+            .get('http://localhost:' + port + '/items/1')
+            .end(function (res) {
+              expect(res.statusCode).to.equal(200);
+              var text = res.text;
+              expect(text).to.be.contain('<div class="panel-title">test title</div>');
+              expect(text).to.be.contain('<span class="label label-default">foo</span><span class="label label-default">bar</span>');
+              expect(text).to.be.contain('<div class="creator">' + user.loginId +'が2014/12/01に投稿</div>');
+              expect(text).to.be.contain('<div class="panel-body"><p>test body</p>\n</div>');
+              done();
+            });
+        });
+      });
     });
   });
 
