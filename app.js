@@ -12,7 +12,7 @@ var models = require('./models');
 var mongoose = require('mongoose');
 var db = mongoose.connect(process.env.NODE_MONGO_URL || 'mongodb://@localhost:27017/test', {safe: true});
 var routes = require('./routes');
-var config = require('./libs').config;
+var libs = require('./libs');
 var app = express();
 
 //// set model
@@ -22,7 +22,7 @@ var app = express();
 //});
 
 app.locals.title = "きいて"; // application title.
-app.locals.githubClientId = config.gitHubAuth.client_id;
+app.locals.githubClientId = libs.config.gitHubAuth.client_id;
 
 app.set('port', process.env.PORT || 3000);
 // view engine setup
@@ -54,13 +54,16 @@ app.use(function (req, res, next) {
   next();
 });
 
+
+var auth = libs.acl.myItem;
+
 // URL mapping
 app.get('/', routes.index);
 app.get('/items/new', routes.item.showCreate);
 app.post('/items/create', routes.item.register);
 app.get('/items/reply/list', routes.reply.getList);
 app.post('/items/reply', routes.reply.register);
-app.get('/items/:id/edit', routes.item.showEdit);
+app.get('/items/:id/edit', libs.acl.myItem, routes.item.showEdit);
 app.post('/items/:id/edit', routes.item.update);
 app.use('/items/:id', routes.item.show);
 
