@@ -6,6 +6,7 @@ var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var http = require('http');
+var domain = require('domain');
 var models = require('./models');
 // database config
 var mongoose = require('mongoose');
@@ -36,6 +37,15 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser('test'));
 app.use(session({secret: 'test'}));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// uncaught exception.
+app.use(function (req, res, next) {
+  var d = domain.create();
+  d.on('error', function (err) {
+    console.error(err);
+  });
+  d.run(next);
+});
 
 app.use(function (req, res, next) {
   if (req.session && req.session.user) {
