@@ -15,11 +15,11 @@ var routes = require('./routes');
 var config = require('./libs').config;
 var app = express();
 
-// set model
-app.use(function (req, res, next) {
-  req.models = models;
-  return next();
-});
+//// set model
+//app.use(function (req, res, next) {
+//  req.models = models;
+//  return next();
+//});
 
 app.locals.title = "きいて"; // application title.
 app.locals.githubClientId = config.gitHubAuth.client_id;
