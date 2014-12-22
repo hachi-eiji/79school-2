@@ -9,6 +9,15 @@
 
 サンプル http://jsfiddle.net/hachi_eiji/jyaybkvh/3/embedded/result/
 
+使用する環境変数
+===
+
+ key | value 
+-----|------
+NODE_MONGO_URL | mongodb URL
+NODE_GITHUB_CLIENT_ID | GitHub Application clinet ID
+NODE_GITHUB_SECRET | GitHub Application SECRET KEY
+
 データモデル
 ===
 
