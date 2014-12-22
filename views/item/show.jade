@@ -7,15 +7,15 @@ block content
       .tags
         each tagName, index in item.tags
           span.label.label-default= tagName
-      if user && user.id !== item.owner.id
-        .creator= item.owner.loginId + 'が' + item.createAt + 'に投稿'
-      else
+      if user && user.id === item.owner.id
         .creator
           span= item.owner.loginId + 'が' + item.createAt + 'に投稿'
           span.owner-menu
             button#edit.btn.btn-success.btn-xs 編集
           span.owner-menu
             button#remove.btn.btn-danger.btn-xs 削除
+      else
+        .creator= item.owner.loginId + 'が' + item.createAt + 'に投稿'
     .panel-body!= item.body
   hr
   #reply-list
