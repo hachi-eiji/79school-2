@@ -50,6 +50,8 @@ updateAt: 日付 Numberで格納
 ```
 id: reply用のid itemIdと時間をhash化したもの
 itemId: itemId
+ownerId: 記事の投稿者
+owner: 記事のオブジェクトID
 body: 本文
 ```
 

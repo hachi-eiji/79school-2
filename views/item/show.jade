@@ -9,3 +9,60 @@ block content
           span.label.label-default= tagName
       .creator= item.owner.loginId + 'が' + item.createAt + 'に投稿'
     .panel-body!= item.body
+  hr
+  #reply-list
+    span.glyphicon.glyphicon-comment
+    strong コメント一覧
+    #reply-detail
+  hr
+  .reply
+    .form-group
+      textarea(rows=5, placeholder='コメントを入力して下さい')#reply-body.form-control.span6
+      button#register.btn.btn-success 投稿する
+
+  script.
+    $(function () {
+      $.ajax({
+        type: 'GET',
+        url: '/items/reply/list',
+        data: 'itemId=#{item.id}',
+        success: function(data, textStatus, jqXHR){
+          console.log(data);
+          var template = '';
+          for (var i = 0; i < data.length; i++) {
+            var comment = data[i];
+            template += '<div class="panel panel-default"><div class="panel-body">' +
+            '<img src="' + comment.creator.avatarUrl + '" width="32px" height="32px">' + comment.creator.loginId + ' wrote <br>' +
+            comment.body +
+            '</div></div>';
+          }
+          $('#reply-detail').html(template);
+        },
+        error: function(data){
+          console.error(data);
+        }
+      });
+      $('#register').click(function (e) {
+        e.preventDefault();
+        var body = $('#reply-body').val();
+        var data = {
+          itemId: '#{item.id}',
+          body: body
+        };
+        $.ajax({
+          type: 'POST',
+          url: '/items/reply',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function (data, textStatus, jqXHR) {
+            $('#reply-body').val('');
+            var template = '<div class="panel panel-default"><div class="panel-body">' +
+              '<img src="#{user.avatarUrl}" width="32px" height="32px"> #{user.loginId} wrote <br>' + body + '</div></div>';
+            $('#reply-detail').prepend(template);
+          },
+          error: function (data) {
+            console.error(data);
+          }
+        });
+      });
+    });

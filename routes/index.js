@@ -1,6 +1,7 @@
 'use strict';
 exports.item = require('./item');
 exports.user = require('./user');
+exports.reply = require('./reply');
 var Item = require('../models').Item;
 var dateformat = require('dateformat');
 

@@ -36,11 +36,11 @@ var schema = new mongoose.Schema({
   searchTags: [String],
   createAt: {
     type: Number,
-    default: Date.now()
+    default: Date.now
   },
   updateAt: {
     type: Number,
-    default: Date.now()
+    default: Date.now
   }
 });
 

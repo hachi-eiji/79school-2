@@ -58,6 +58,8 @@ app.use(function (req, res, next) {
 app.get('/', routes.index);
 app.get('/items/new', routes.item.showCreate);
 app.post('/items/create', routes.item.register);
+app.get('/items/reply/list', routes.reply.getList);
+app.post('/items/reply', routes.reply.register);
 app.get('/items/:id/edit', routes.item.showEdit);
 app.post('/items/:id/edit', routes.item.update);
 app.use('/items/:id', routes.item.show);

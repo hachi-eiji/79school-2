@@ -23,11 +23,11 @@ var schema = new mongoose.Schema({
   avatarUrl : String,
   createAt: {
     type: Number,
-    default: Date.now()
+    default: Date.now
   },
   updateAt: {
     type: Number,
-    default: Date.now()
+    default: Date.now
   }
 });
 
