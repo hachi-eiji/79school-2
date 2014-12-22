@@ -19,6 +19,11 @@ exports.show = function (req, res, next) {
     if (!item) {
       return res.status(404).end();
     }
+    marked.setOptions({
+      gfm: true,
+      breaks: true
+    });
+    item.body = marked(item.body);
     res.render('item/show', {item: item});
   });
 };
@@ -83,7 +88,12 @@ exports.register = function (req, res, next) {
  * @param next
  */
 exports.showEdit = function (req, res, next) {
-
+  getItem(req.params.id, function (err, item) {
+    if (err) {
+      return next(err);
+    }
+    res.render('item/edit', {item: item});
+  });
 };
 
 
@@ -94,7 +104,26 @@ exports.showEdit = function (req, res, next) {
  * @param next
  */
 exports.update = function (req, res, next) {
-
+  var id = req.params.id;
+  var body = req.body;
+  var tags = body.tags || [];
+  var searchTags = [];
+  for (var i = 0; i < tags.length; i++) {
+    searchTags.push(tags[i].toLowerCase());
+  }
+  var data = {
+    title: body.title,
+    body: body.body,
+    tags: tags,
+    searchTags: searchTags,
+    updateAt: Date.now()
+  };
+  Item.update({id: id}, data, function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.status(200).end();
+  });
 };
 
 
@@ -106,16 +135,12 @@ function getItem(id, cb) {
     if (!item) {
       cb(null, null);
     }
-    marked.setOptions({
-      gfm: true,
-      breaks: true
-    });
     var data = {
       id: item.id,
       owner: item.owner,
       ownerId: item.ownerId,
       title: item.title,
-      body: marked(item.body),
+      body: item.body,
       tags: item.tags,
       createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd'),
       updateAt: dateformat(new Date(item.updateAt), 'yyyy/mm/dd')

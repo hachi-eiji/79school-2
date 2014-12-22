@@ -7,7 +7,15 @@ block content
       .tags
         each tagName, index in item.tags
           span.label.label-default= tagName
-      .creator= item.owner.loginId + 'が' + item.createAt + 'に投稿'
+      if user && user.id !== item.owner.id
+        .creator= item.owner.loginId + 'が' + item.createAt + 'に投稿'
+      else
+        .creator
+          span= item.owner.loginId + 'が' + item.createAt + 'に投稿'
+          span.owner-menu
+            button#edit.btn.btn-success.btn-xs 編集
+          span.owner-menu
+            button#remove.btn.btn-danger.btn-xs 削除
     .panel-body!= item.body
   hr
   #reply-list
@@ -31,7 +39,6 @@ block content
         url: '/items/reply/list',
         data: 'itemId=#{item.id}',
         success: function (data, textStatus, jqXHR) {
-          console.log(data);
           var template = '';
           for (var i = 0; i < data.length; i++) {
             var comment = data[i];
@@ -50,6 +57,14 @@ block content
   if user
     script.
       $(function () {
+        $('#edit').click(function (e) {
+          location.href = '/items/#{item.id}/edit';
+        });
+        $('#remove').click(function (e) {
+          if (confirm('削除していい?')) {
+
+          }
+        });
         $('#register').click(function (e) {
           e.preventDefault();
           var body = $('#reply-body').val();

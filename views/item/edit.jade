@@ -1,0 +1,93 @@
+extends ../layout
+block content
+  .row
+    .col-md-12
+      p#register-success-message.alert.alert-success.hidden
+        | 登録しました
+      p#register-error-message.alert.alert-dangar.hidden
+        | エラーが発生しました
+  .row
+    .col-md-12
+      .form-group
+        input(type='text', placeholder='タイトル', value= item.title).form-control.input-lg#title
+        p#title-error.alert.alert-danger.hidden
+          | タイトルは必須です
+  .row
+    .col-md-12
+      .form-group
+        input(type='text', placeholder='タグ', value= item.tags.join(' ')).tag.form-control#tags
+        span.help-block
+          | スペース区切りで1つのタグ
+  .row
+    .form-group
+      .col-md-12
+        | 本文(markdown)
+      .col-md-6
+        textarea(rows=20)#body.form-control.span6
+          = item.body
+      .col-md-6
+        p#body-error.alert.alert-danger.hidden
+          | 本文は必須です
+        .wall.wall-md#show-text
+  .row
+    .form-group
+      .col-md-11
+      .col-md-1
+        button#register.btn.btn-success
+          | 登録
+  script(src='/javascripts/marked.js')
+  script.
+    $(function () {
+      marked.setOptions({
+        gfm: true,
+        breaks: true
+      });
+      setInterval(function () {
+        $('#show-text').html(marked($('#body').val()));
+      }, 5000);
+      $('#register').click(function () {
+        var title = $('#title').val() || '';
+        if (title.length === 0) {
+          var $obj = $('#title-error');
+          $obj.removeClass('hidden');
+          setTimeout(function () {
+            $obj.addClass('hidden');
+          }, 2000);
+          return false;
+        }
+        var body = $('#body').val() || '';
+        if (body.length === 0) {
+          var $obj = $('#body-error');
+          $obj.removeClass('hidden');
+          setTimeout(function () {
+            $obj.addClass('hidden');
+          }, 2000);
+          return false;
+        }
+        var data = {
+          title: title,
+          body: body,
+          tags: $('#tags').val().split(' ') || []
+        };
+        $.ajax({
+          type: 'POST',
+          url: '/items/#{item.id}/edit',
+          contentType: 'application/json',
+          data: JSON.stringify(data),
+          success: function (data, textStatus, jqXHR) {
+            var $obj = $('#register-success-message');
+            $obj.removeClass('hidden');
+            setTimeout(function () {
+              $obj.addClass('hidden');
+            }, 2000);
+          },
+          error: function (data) {
+            var $obj = $('#register-error-message');
+            $obj.removeClass('hidden');
+            setTimeout(function () {
+              $obj.addClass('hidden');
+            }, 2000);
+          }
+        });
+      });
+    });
