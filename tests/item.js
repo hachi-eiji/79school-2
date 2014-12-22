@@ -89,6 +89,49 @@ describe('server', function () {
     });
   });
 
+  describe('edit item', function () {
+    it('should update item', function (done) {
+      User.findOne({id: 1}, function (err, user) {
+        var item = {
+          id: '1',
+          ownerId: 1,
+          owner: user._id,
+          title: 'test title',
+          body: 'test body',
+          tags: ['foo', 'bar'],
+          searchTags: ['foo', 'bar'],
+          createAt: Date.now(),
+          updateAt: Date.now()
+        };
+        Item.create(item, function (err, item) {
+          var updated = {
+            title: 'updated title',
+            body: 'updated body',
+            tags: ['updated1', 'updated2']
+          };
+          superagent
+            .post('http://localhost:' + port + '/items/1/edit')
+            .send(updated)
+            .end(function (res) {
+              expect(res.statusCode).to.equal(200);
+              Item.findOne({id: '1'}, function (err, item) {
+                expect(err).to.be.equal(null);
+                expect(item.title).to.be.equal('updated title');
+                expect(item.body).to.be.equal('updated body');
+                expect(item.tags).to.have.length(2);
+                expect(item.tags).to.contain('updated1');
+                expect(item.tags).to.contain('updated2');
+                expect(item.searchTags).to.have.length(2);
+                expect(item.searchTags).to.contain('updated1');
+                expect(item.searchTags).to.contain('updated2');
+                done();
+              });
+            });
+        });
+      });
+    });
+  });
+
   afterEach(function () {
     Item.remove({}, function (err) {
     });
