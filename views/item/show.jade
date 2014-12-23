@@ -3,10 +3,12 @@ extends ../layout
 block content
   .panel.panel-default
     .panel-heading
-      .panel-title= item.title
+      .panel-title
+        h1= item.title
       .tags
-        each tagName, index in item.tags
-          span.label.label-default= tagName
+        h4
+          each tagName, index in item.tags
+            span.label.label-default= tagName
       if user && user.id === item.owner.id
         .creator
           span= item.owner.loginId + 'が' + item.createAt + 'に投稿'
