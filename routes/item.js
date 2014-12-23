@@ -1,8 +1,10 @@
 'use strict';
-var Item = require('../models').Item;
 var crypto = require('crypto');
 var marked = require('marked');
 var dateformat = require('dateformat');
+var models = require('../models')
+var Item = models.Item;
+var Reply = models.Reply;
 
 /**
  * アイテムを表示する.
@@ -122,6 +124,25 @@ exports.update = function (req, res, next) {
     if (err) {
       return next(err);
     }
+    res.status(200).end();
+  });
+};
+
+
+/**
+ * 記事削除.
+ */
+exports.remove = function (req, res, next) {
+  var id = req.params.id;
+  Item.remove({id: id}, function (err) {
+    if (err) {
+      return next(err);
+    }
+    Reply.remove({itemId: id}, function (err) {
+      if (err) {
+        return next(err);
+      }
+    });
     res.status(200).end();
   });
 };

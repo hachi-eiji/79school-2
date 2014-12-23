@@ -62,7 +62,18 @@ block content
         });
         $('#remove').click(function (e) {
           if (confirm('削除していい?')) {
-
+            $.ajax({
+              type: 'POST',
+              url: '/items/#{item.id}/remove',
+              contentType: 'application/json',
+              success: function (data, textStatus, jqXHR) {
+                alert('削除しました');
+                location.href = '/';
+              },
+              error: function (data) {
+                console.error(data);
+              }
+            });
           }
         });
         $('#register').click(function (e) {

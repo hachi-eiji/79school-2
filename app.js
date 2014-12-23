@@ -52,6 +52,7 @@ app.get('/items/reply/list', routes.reply.getList);
 app.post('/items/reply', routes.reply.register);
 app.get('/items/:id/edit', libs.acl.myItem, routes.item.showEdit);
 app.post('/items/:id/edit', libs.acl.myItem, routes.item.update);
+app.post('/items/:id/remove', libs.acl.myItem, routes.item.remove);
 app.use('/items/:id', routes.item.show);
 
 // auth
