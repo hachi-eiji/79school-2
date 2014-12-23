@@ -9,23 +9,23 @@ var shutdown = app.shutdown;
 var Item = require('../models').Item;
 var User = require('../models').User
 
-describe('server', function () {
+describe('server', function() {
   this.timeout(5000);
-  before(function () {
+  before(function() {
     startup();
   });
 
-  describe('item register', function () {
+  describe('item register', function() {
     var cookie;
-    it('login debug user', function (done) {
+    it('login debug user', function(done) {
       superagent
         .get('http://localhost:' + port + '/debug/login')
-        .end(function (res) {
+        .end(function(res) {
           cookie = res.headers['set-cookie'][0];
           done();
         });
     });
-    it('should create item object', function (done) {
+    it('should create item object', function(done) {
       var data = {
         title: 'title',
         body: 'body',
@@ -35,9 +35,11 @@ describe('server', function () {
         .post('http://localhost:' + port + '/items/create')
         .send(data)
         .set('Cookie', cookie)
-        .end(function (res) {
+        .end(function(res) {
           expect(res.status).to.equal(200);
-          Item.find({ownerId: 1}).populate('owner').exec(function (err, items) {
+          Item.find({
+            ownerId: 1
+          }).populate('owner').exec(function(err, items) {
             var item = items[0];
             expect(item.ownerId).to.equal(1);
             expect(item.title).to.equal('title');
@@ -56,11 +58,13 @@ describe('server', function () {
     });
   });
 
-  describe('get item', function () {
-    it('should get item object', function (done) {
+  describe('get item', function() {
+    it('should get item object', function(done) {
       var createAt = new Date(2014, 11, 1);
       var updateAt = new Date(2014, 11, 2);
-      User.findOne({id: 1}, function (err, user) {
+      User.findOne({
+        id: 1
+      }, function(err, user) {
         var item = {
           id: '1',
           ownerId: 1,
@@ -72,10 +76,10 @@ describe('server', function () {
           createAt: createAt.getTime(),
           updateAt: updateAt.getTime()
         };
-        Item.create(item, function (err, item) {
+        Item.create(item, function(err, item) {
           superagent
             .get('http://localhost:' + port + '/items/1')
-            .end(function (res) {
+            .end(function(res) {
               expect(res.statusCode).to.equal(200);
               var text = res.text;
               expect(text).to.be.contain('<div class="panel-title">test title</div>');
@@ -89,9 +93,20 @@ describe('server', function () {
     });
   });
 
-  describe('edit item', function () {
-    it('should update item', function (done) {
-      User.findOne({id: 1}, function (err, user) {
+  describe('edit item', function() {
+    var cookie;
+    it('login debug user', function(done) {
+      superagent
+        .get('http://localhost:' + port + '/debug/login')
+        .end(function(res) {
+          cookie = res.headers['set-cookie'][0];
+          done();
+        });
+    });
+    it('should update item', function(done) {
+      User.findOne({
+        id: 1
+      }, function(err, user) {
         var item = {
           id: '1',
           ownerId: 1,
@@ -103,7 +118,7 @@ describe('server', function () {
           createAt: Date.now(),
           updateAt: Date.now()
         };
-        Item.create(item, function (err, item) {
+        Item.create(item, function(err, item) {
           var updated = {
             title: 'updated title',
             body: 'updated body',
@@ -112,9 +127,12 @@ describe('server', function () {
           superagent
             .post('http://localhost:' + port + '/items/1/edit')
             .send(updated)
-            .end(function (res) {
+            .set('Cookie', cookie)
+            .end(function(res) {
               expect(res.statusCode).to.equal(200);
-              Item.findOne({id: '1'}, function (err, item) {
+              Item.findOne({
+                id: '1'
+              }, function(err, item) {
                 expect(err).to.be.equal(null);
                 expect(item.title).to.be.equal('updated title');
                 expect(item.body).to.be.equal('updated body');
@@ -132,12 +150,11 @@ describe('server', function () {
     });
   });
 
-  afterEach(function () {
-    Item.remove({}, function (err) {
-    });
+  afterEach(function() {
+    Item.remove({}, function(err) {});
   });
 
-  after(function () {
+  after(function() {
     shutdown();
   });
 });
