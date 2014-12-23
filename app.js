@@ -8,15 +8,16 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var domain = require('domain');
 var mongoose = require('mongoose');
-mongoose.connect(process.env.NODE_MONGO_URL || 'mongodb://@localhost:27017/test', {safe: true});
-var routes = require('./routes');
 var libs = require('./libs');
+var routes = require('./routes');
+
+mongoose.connect(libs.config.mongo.url, {safe: true});
 var app = express();
 
 app.locals.title = "きいて"; // application title.
 app.locals.githubClientId = libs.config.gitHubAuth.client_id;
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', libs.config.application.port);
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
