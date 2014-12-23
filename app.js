@@ -1,25 +1,17 @@
+'use strict';
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var bodyParser = require('body-parser');
 var http = require('http');
 var domain = require('domain');
-var models = require('./models');
-// database config
 var mongoose = require('mongoose');
-var db = mongoose.connect(process.env.NODE_MONGO_URL || 'mongodb://@localhost:27017/test', {safe: true});
+mongoose.connect(process.env.NODE_MONGO_URL || 'mongodb://@localhost:27017/test', {safe: true});
 var routes = require('./routes');
 var libs = require('./libs');
 var app = express();
-
-//// set model
-//app.use(function (req, res, next) {
-//  req.models = models;
-//  return next();
-//});
 
 app.locals.title = "きいて"; // application title.
 app.locals.githubClientId = libs.config.gitHubAuth.client_id;
@@ -29,8 +21,6 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-// uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
@@ -54,9 +44,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-
-var auth = libs.acl.myItem;
-
 // URL mapping
 app.get('/', routes.index);
 app.get('/items/new', routes.item.showCreate);
@@ -64,7 +51,7 @@ app.post('/items/create', routes.item.register);
 app.get('/items/reply/list', routes.reply.getList);
 app.post('/items/reply', routes.reply.register);
 app.get('/items/:id/edit', libs.acl.myItem, routes.item.showEdit);
-app.post('/items/:id/edit', routes.item.update);
+app.post('/items/:id/edit', libs.acl.myItem, routes.item.update);
 app.use('/items/:id', routes.item.show);
 
 // auth
