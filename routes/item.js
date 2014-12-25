@@ -2,7 +2,7 @@
 var crypto = require('crypto');
 var dateformat = require('dateformat');
 var models = require('../models');
-var libs = require('../libs');
+var utils = require('../libs').utils;
 var Item = models.Item;
 var Reply = models.Reply;
 
@@ -21,7 +21,7 @@ exports.show = function (req, res, next) {
     if (!item) {
       return res.status(404).end();
     }
-    item.body = libs.utils.markdownToHTML(item.body);
+    item.body = utils.markdownToHTML(item.body);
     res.render('item/show', {item: item});
   });
 };

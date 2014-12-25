@@ -1,6 +1,8 @@
 'use strict';
-var crypto = require('crypto');
 var marked = require('marked');
+var utils = require('../libs').utils;
+// TODO: この記法が正しいのかなぁ...
+var toMd5 = utils.toMd5;
 var Reply = require('../models').Reply;
 
 exports.register = function (req, res, next) {
@@ -9,11 +11,7 @@ exports.register = function (req, res, next) {
   var time = Date.now();
   var user = req.session.user;
 
-  // TODO ユーティリティクラスにリファクタリング
-  var md5 = crypto.createHash('md5');
-  md5.update(String(itemId) + String(time), 'utf8');
-  var id = md5.digest('hex');
-
+  var id = toMd5(itemId, time);
   var data = {
     id: id,
     itemId: itemId,
@@ -36,7 +34,7 @@ exports.getList = function (req, res, next) {
     itemId: req.query.itemId
   };
   Reply.list(limit, offset, query, function (err, replies) {
-    if(err) {
+    if (err) {
       return next(err);
     }
     marked.setOptions({
@@ -44,10 +42,10 @@ exports.getList = function (req, res, next) {
       breaks: true
     });
     var data = [];
-    for(var i = 0; i < replies.length; i++) {
+    for (var i = 0; i < replies.length; i++) {
       var reply = replies[i];
       data.push({
-        creator:{
+        creator: {
           loginId: reply.owner.loginId,
           avatarUrl: reply.owner.avatarUrl
         },
