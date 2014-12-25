@@ -82,7 +82,7 @@ describe('server', function() {
             .end(function(res) {
               expect(res.statusCode).to.equal(200);
               var text = res.text;
-              expect(text).to.be.contain('<div class="panel-title">test title</div>');
+              expect(text).to.be.contain('test title');
               expect(text).to.be.contain('<span class="label label-default">foo</span><span class="label label-default">bar</span>');
               expect(text).to.be.contain(user.loginId + 'が2014/12/01に投稿');
               expect(text).to.be.contain('<div class="panel-body"><p>test body</p>\n</div>');
