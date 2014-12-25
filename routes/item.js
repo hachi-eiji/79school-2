@@ -1,8 +1,8 @@
 'use strict';
 var crypto = require('crypto');
-var marked = require('marked');
 var dateformat = require('dateformat');
-var models = require('../models')
+var models = require('../models');
+var libs = require('../libs');
 var Item = models.Item;
 var Reply = models.Reply;
 
@@ -21,11 +21,7 @@ exports.show = function (req, res, next) {
     if (!item) {
       return res.status(404).end();
     }
-    marked.setOptions({
-      gfm: true,
-      breaks: true
-    });
-    item.body = marked(item.body);
+    item.body = libs.utils.markdownToHTML(item.body);
     res.render('item/show', {item: item});
   });
 };
