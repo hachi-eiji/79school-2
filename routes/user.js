@@ -13,35 +13,40 @@ exports.gitHubAuthCallback = function (req, res, next) {
   if (req.session && req.session.user) {
     res.redirect(referer);
   }
-  gitHubApi.getUser(req.query.code, function (err, gitHubUser) {
+
+  async.waterfall([
+    function (callback) {
+      gitHubApi.getUser(req.query.code, function (err, gitHubUser) {
+        if (!gitHubUser) {
+          callback(new Error('can not get user'));
+        }
+        callback(err, gitHubUser);
+      });
+    },
+    function (gitHubUser, callback) {
+      User.findOne({id: gitHubUser.id}, function (err, user) {
+        callback(err, gitHubUser, user);
+      });
+    },
+    function (gitHubUser, user, callback) {
+      if (user) {
+        callback(null, user);
+      }
+      User.create({
+        id: gitHubUser.id,
+        loginId: gitHubUser.login,
+        name: gitHubUser.name,
+        avatarUrl: gitHubUser.avatar_url
+      }, function (err, user) {
+        callback(err, user);
+      });
+    }
+  ], function (err, user) {
     if (err) {
       return next(err);
     }
-    if (!gitHubUser) {
-      return next(new Error('can not get user'));
-    }
-    User.findOne({id: gitHubUser.id}, function (err, user) {
-      if (err) {
-        return next(err);
-      }
-      if (!user) {
-        User.create({
-          id: gitHubUser.id,
-          loginId: gitHubUser.login,
-          name: gitHubUser.name,
-          avatarUrl: gitHubUser.avatar_url
-        }, function (err, user) {
-          if (err) {
-            return next(err);
-          }
-          req.session.user = user;
-          res.redirect(referer);
-        });
-      } else {
-        req.session.user = user;
-        res.redirect(referer);
-      }
-    });
+    req.session.user = user;
+    res.redirect(referer);
   });
 };
 
