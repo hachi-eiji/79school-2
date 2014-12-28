@@ -1,4 +1,5 @@
 'use strict';
+var async = require('async');
 var User = require('../models').User;
 var gitHubApi = require('../libs/gitHubApi');
 
