@@ -1,5 +1,5 @@
 'use strict';
-var config = require('./config');
+var appConfig = require('./config');
 var https = require('https');
 var querystring = require('querystring');
 
@@ -34,8 +34,8 @@ exports.getAccessToken = function (code, cb) {
     }
   }
   var data = querystring.stringify({
-    client_id: config.gitHubAuth.client_id,
-    client_secret: config.gitHubAuth.secret,
+    client_id: appConfig.gitHubAuth.client_id,
+    client_secret: appConfig.gitHubAuth.secret,
     code: code
   });
   var option = {

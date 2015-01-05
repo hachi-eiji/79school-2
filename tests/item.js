@@ -7,7 +7,7 @@ var startup = app.startup;
 var shutdown = app.shutdown;
 
 var Item = require('../models').Item;
-var User = require('../models').User
+var User = require('../models').User;
 
 describe('server', function() {
   this.timeout(5000);
