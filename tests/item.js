@@ -1,3 +1,4 @@
+/* global describe, it, before, after, afterEach */
 'use strict';
 var expect = require('expect.js');
 var superagent = require('superagent');
@@ -76,7 +77,7 @@ describe('server', function() {
           createAt: createAt.getTime(),
           updateAt: updateAt.getTime()
         };
-        Item.create(item, function(err, item) {
+        Item.create(item, function () {
           superagent
             .get('http://localhost:' + port + '/items/1')
             .end(function(res) {
@@ -118,7 +119,7 @@ describe('server', function() {
           createAt: Date.now(),
           updateAt: Date.now()
         };
-        Item.create(item, function(err, item) {
+        Item.create(item, function () {
           var updated = {
             title: 'updated title',
             body: 'updated body',
@@ -151,7 +152,8 @@ describe('server', function() {
   });
 
   afterEach(function() {
-    Item.remove({}, function(err) {});
+    Item.remove({}, function () {
+    });
   });
 
   after(function() {
