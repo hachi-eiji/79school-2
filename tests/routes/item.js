@@ -2,13 +2,13 @@
 'use strict';
 var expect = require('expect.js');
 var superagent = require('superagent');
-var app = require('../app');
+var app = require('../../app');
 var port = app.port;
 var startup = app.startup;
 var shutdown = app.shutdown;
 
-var Item = require('../models').Item;
-var User = require('../models').User;
+var Item = require('../../models/index').Item;
+var User = require('../../models/index').User;
 
 describe('server', function() {
   this.timeout(5000);
