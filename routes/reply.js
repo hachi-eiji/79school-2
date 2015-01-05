@@ -1,8 +1,8 @@
 'use strict';
-var marked = require('marked');
 var utils = require('../libs').utils;
 // TODO: この記法が正しいのかなぁ...
 var toMd5 = utils.toMd5;
+var markdownToHTML = utils.markdownToHTML;
 var Reply = require('../models').Reply;
 
 exports.register = function (req, res, next) {
@@ -37,10 +37,6 @@ exports.getList = function (req, res, next) {
     if (err) {
       return next(err);
     }
-    marked.setOptions({
-      gfm: true,
-      breaks: true
-    });
     var data = [];
     for (var i = 0; i < replies.length; i++) {
       var reply = replies[i];
@@ -49,7 +45,7 @@ exports.getList = function (req, res, next) {
           loginId: reply.owner.loginId,
           avatarUrl: reply.owner.avatarUrl
         },
-        body: marked(reply.body)
+        body: markdownToHTML(reply.body)
       });
     }
     res.send(data);
