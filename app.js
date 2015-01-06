@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var http = require('http');
 var domain = require('domain');
 var mongoose = require('mongoose');
+var appLog = require('log4js').getLogger();
 var libs = require('./libs');
 var routes = require('./routes');
 
@@ -75,6 +76,7 @@ app.use(function (req, res, next) {
 // will print stacktrace
 if (app.get('env') === 'development') {
   app.use(function (err, req, res, next) {
+    appLog.error(err.stack);
     res.status(err.status || 500);
     res.render('error', {
       message: err.message,
@@ -86,6 +88,7 @@ if (app.get('env') === 'development') {
 // production error handler
 // no stacktraces leaked to user
 app.use(function (err, req, res, next) {
+  appLog.error(err.stack);
   res.status(err.status || 500);
   res.render('error', {
     message: err.message,
