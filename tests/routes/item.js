@@ -11,13 +11,13 @@ var shutdown = app.shutdown;
 var Item = require('../../models/index').Item;
 var User = require('../../models/index').User;
 
-describe('server', function() {
+describe('item', function () {
   this.timeout(5000);
   before(function() {
     startup();
   });
 
-  describe('item register', function() {
+  describe('register', function () {
     var cookie;
     it('should create item object', function(done) {
       async.waterfall([
@@ -73,7 +73,7 @@ describe('server', function() {
     });
   });
 
-  describe('get item', function() {
+  describe('get', function () {
     it('should get item object', function(done) {
       var createAt = new Date(2014, 11, 1);
       var updateAt = new Date(2014, 11, 2);
@@ -118,7 +118,7 @@ describe('server', function() {
     });
   });
 
-  describe('edit item', function() {
+  describe('edit', function () {
     var cookie;
     it('should update item', function(done) {
       async.waterfall([
