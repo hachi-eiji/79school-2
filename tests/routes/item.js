@@ -176,8 +176,8 @@ describe('item', function () {
 
       ], function (err, item) {
         expect(err).to.be.equal(null);
-        expect(item.title).to.be.equal('updated title');
-        expect(item.body).to.be.equal('updated body');
+        expect(item.title).to.equal('updated title');
+        expect(item.body).to.equal('updated body');
         expect(item.tags).to.have.length(2);
         expect(item.tags).to.contain('updated1');
         expect(item.tags).to.contain('updated2');
