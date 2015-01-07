@@ -12,7 +12,18 @@ var appLog = require('log4js').getLogger();
 var libs = require('./libs');
 var routes = require('./routes');
 
-mongoose.connect(libs.config.mongo.url, {safe: true});
+mongoose.connect(libs.config.mongo.url, {safe: true}, function (err) {
+  if (err) {
+    appLog.fatal('can not connect to MongoDB', err.stack);
+    process.exit(1);
+  }
+});
+
+if (!libs.config.gitHubAuth.client_id && !libs.config.gitHubAuth.secret) {
+  appLog.fatal('can not GitHub client_id or secret. please export NODE_GITHUB_SECRET and NODE_GITHUB_SECRET');
+  process.exit(1);
+}
+
 var app = express();
 
 app.locals.title = "きいて"; // application title.
@@ -34,7 +45,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(function (req, res, next) {
   var d = domain.create();
   d.on('error', function (err) {
-    console.error(err);
+    appLog.error(err.stack);
   });
   d.run(next);
 });
