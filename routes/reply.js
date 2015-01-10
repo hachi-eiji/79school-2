@@ -3,8 +3,6 @@
  */
 'use strict';
 var utils = require('../libs').utils;
-// TODO: この記法が正しいのかなぁ...
-var toMd5 = utils.toMd5;
 var markdownToHTML = utils.markdownToHTML;
 var Reply = require('../models').Reply;
 
@@ -14,7 +12,7 @@ exports.register = function (req, res, next) {
   var time = Date.now();
   var user = req.session.user;
 
-  var id = toMd5(itemId, time);
+  var id = utils.toMd5(itemId, time);
   var data = {
     id: id,
     itemId: itemId,

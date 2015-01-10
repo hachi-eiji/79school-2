@@ -21,9 +21,10 @@ exports.markdownToHTML = function (str) {
 
 /**
  * to md5 from argument values
- * @return {String} md5 string
+ * @param {...String} val - to MD5 values
+ * @return {String} MD5
  */
-exports.toMd5 = function () {
+exports.toMd5 = function (val) {
   if (arguments.length === 0) {
     return '';
   }
