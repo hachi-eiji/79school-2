@@ -4,6 +4,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
+var MongoSession = require('connect-mongo')(session);
 var bodyParser = require('body-parser');
 var http = require('http');
 var domain = require('domain');
@@ -38,7 +39,7 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser('test'));
-app.use(session({secret: 'test'}));
+app.use(session({secret: 'test', store: new MongoSession({mongooseConnection: mongoose.connection})}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // uncaught exception.
