@@ -1,3 +1,6 @@
+/**
+ * @module routes/user
+ */
 'use strict';
 var async = require('async');
 var User = require('../models').User;

@@ -1,3 +1,6 @@
+/**
+ * @module libs/acl
+ */
 'use strict';
 var models = require('../models');
 

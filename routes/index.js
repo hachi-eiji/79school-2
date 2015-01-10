@@ -1,3 +1,6 @@
+/**
+ * @module routes
+ */
 'use strict';
 exports.item = require('./item');
 exports.user = require('./user');

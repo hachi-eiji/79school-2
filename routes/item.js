@@ -1,3 +1,6 @@
+/**
+ * @module routes/item
+ */
 'use strict';
 var crypto = require('crypto');
 var dateformat = require('dateformat');

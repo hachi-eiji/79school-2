@@ -1,3 +1,6 @@
+/**
+ * @module routes/reply
+ */
 'use strict';
 var utils = require('../libs').utils;
 // TODO: この記法が正しいのかなぁ...

@@ -1,3 +1,6 @@
+/**
+ * @module libs/config
+ */
 'use strict';
 exports.application = {
   port: process.env.PORT || 3000

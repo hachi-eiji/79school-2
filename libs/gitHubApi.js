@@ -1,3 +1,6 @@
+/**
+ * @module libs/gitHubApi
+ */
 'use strict';
 var appConfig = require('./config');
 var https = require('https');

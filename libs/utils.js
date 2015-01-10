@@ -1,3 +1,6 @@
+/**
+ * @module libs/utils
+ */
 'use strict';
 var marked = require('marked');
 var crypto = require('crypto');
