@@ -12,6 +12,11 @@ exports.login = function (req, res, next) {
 exports.create = function (req, res, next) {
 };
 
+exports.logout = function (req, res, next) {
+  req.session.destroy();
+  res.redirect('/');
+};
+
 exports.gitHubAuthCallback = function (req, res, next) {
   var referer = req.headers['referer'] || '/';
   if (req.session && req.session.user) {

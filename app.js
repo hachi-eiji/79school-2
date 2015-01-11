@@ -69,6 +69,8 @@ app.post('/items/:id/edit', libs.acl.myItem, routes.item.update);
 app.post('/items/:id/remove', libs.acl.myItem, routes.item.remove);
 app.use('/items/:id', routes.item.show);
 
+// logout
+app.use('/user/logout/', routes.user.logout);
 // auth
 app.use('/auth/github/callback', routes.user.gitHubAuthCallback);
 

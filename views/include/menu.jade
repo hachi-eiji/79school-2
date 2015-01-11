@@ -26,4 +26,10 @@ nav.navbar.navbar-default(role="navigation")
             a(href='https://github.com/login/oauth/authorize?client_id=' + githubClientId + '&scope=user')
               | GitHubでLogin
           else
-            a(href='#')= 'ようこそ ' + user.loginId
+            li.dropdown
+              a.dropdown-toggle(data-toggle="dropdown", role="button",aria-expanded="false")= 'ようこそ ' + user.loginId
+              span.caret
+              ul.dropdown-menu(role="menu")
+                li
+                  a(href="/user/logout")
+                    | logout
