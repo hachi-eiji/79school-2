@@ -46,13 +46,26 @@ var schema = new mongoose.Schema({
 
 /**
  * 検索用static method.
- * @param {Number} limit  取得する件数
- * @param {Number} offset 取得開始位置
- * @param {Object} query  取得するための検索条件.
+ * @param {Object} condition - 検索条件.
+ * @param {Number} condition.limit - 取得件数
+ * @param {Number} condition.offset 取得開始位置
+ * @param {Object} condition.query  取得するための検索条件.
+ * @param {Object} condition.sort - ソート条件
  * @param {Function} callback
  */
-schema.statics.search = function (limit, offset, query, callback) {
-  this.find(query).populate('owner').sort({updateAt: 'desc'}).skip(offset).limit(limit).exec(callback);
+schema.statics.search = function (condition, callback) {
+  condition = condition || {};
+  var query = this.find(condition.query || {}).populate('owner');
+  if (condition.sort) {
+    query = query.sort(condition.sort);
+  }
+  if (condition.offset) {
+    query = query.skip(condition.offset);
+  }
+  if (condition.limit) {
+    query = query.limit(condition.limit);
+  }
+  query.exec(callback);
 };
 
 schema.statics.findItem = function (id, callback) {

@@ -7,6 +7,8 @@ exports.user = require('./user');
 exports.reply = require('./reply');
 var Item = require('../models').Item;
 var dateformat = require('dateformat');
+var async = require('async');
+var _ = require('lodash');
 
 exports.index = function (req, res, next) {
   getTimeLine(50, 0, {}, function (err, timeLine) {
@@ -26,19 +28,24 @@ exports.index = function (req, res, next) {
  * @param {Function} callback
  */
 function getTimeLine(limit, offset, query, callback) {
-  offset = offset || 0;
-  limit = limit || 50;
-  query = query || {};
-
-  Item.search(limit, offset, query, function (err, items) {
+  async.waterfall([
+    function (next) {
+      var condition = {
+        offset: offset || 0,
+        limit: limit || 50,
+        query: query || {},
+        sort: {updateAt: 'desc'}
+      };
+      Item.search(condition, function (err, items) {
+        next(err, items);
+      });
+    }
+  ], function (err, items) {
     if (err) {
-      if (callback) {
-        callback(err, []);
-      }
+      callback(err, []);
     }
     var timeLine = [];
-    for (var i = 0; i < items.length; i++) {
-      var item = items[i];
+    _.forEach(items, function (item) {
       timeLine.push({
         id: item.id,
         owner: {
@@ -52,9 +59,7 @@ function getTimeLine(limit, offset, query, callback) {
         tags: item.tags,
         createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd')
       });
-    }
-    if (callback) {
-      callback(null, timeLine);
-    }
+    });
+    callback(null, timeLine);
   });
 }
