@@ -67,6 +67,7 @@ app.post('/items/reply', routes.reply.register);
 app.get('/items/:id/edit', libs.acl.myItem, routes.item.showEdit);
 app.post('/items/:id/edit', libs.acl.myItem, routes.item.update);
 app.post('/items/:id/remove', libs.acl.myItem, routes.item.remove);
+app.post('/items/:id/like', routes.item.like);
 app.use('/items/:id', routes.item.show);
 
 // logout

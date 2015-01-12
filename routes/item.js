@@ -2,6 +2,7 @@
  * @module routes/item
  */
 'use strict';
+var async = require('async');
 var crypto = require('crypto');
 var dateformat = require('dateformat');
 var models = require('../models');
@@ -146,6 +147,36 @@ exports.remove = function (req, res, next) {
   });
 };
 
+/**
+ * likeする.
+ * @param req
+ * @param res
+ * @param next
+ */
+exports.like = function (req, res, next) {
+  var userId = req.session && req.session.user && req.session.user.id || -1;
+  var itemId = req.params.id;
+  async.waterfall([
+    function (nextTask) {
+      Item.findItem(itemId, function (err, item) {
+        if (!item) {
+          nextTask(new Error('item not found'), null);
+        }
+        nextTask(err);
+      });
+    },
+    function (nextTask) {
+      Item.update({id: itemId}, {"$push": {likes: userId}}, function (err, item) {
+        nextTask(err, item);
+      });
+    }
+  ], function (err) {
+    if(err) {
+      res.status(500).end();
+    }
+    res.status(200).end();
+  });
+};
 
 function getItem(id, cb) {
   Item.findItem(id, function (err, item) {

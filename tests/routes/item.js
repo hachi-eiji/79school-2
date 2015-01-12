@@ -189,9 +189,123 @@ describe('item', function () {
     });
   });
 
-  afterEach(function() {
-    Item.remove({}, function () {
+  describe('like request ', function() {
+    it('should create like on item collection', function(done) {
+      var cookie;
+      async.waterfall([
+        // create dummy data
+        function(nextTask) {
+          superagent
+            .get('http://localhost:' + port + '/debug/login')
+            .end(function(res) {
+              cookie = res.headers['set-cookie'][0];
+              nextTask();
+            });
+        },
+        function(nextTask) {
+          User.findOne({
+            id: 1
+          }, function(err, user) {
+            nextTask(err, user);
+          });
+        },
+        function(user, nextTask) {
+          var item = {
+            id: '1',
+            ownerId: 1,
+            owner: user._id,
+            title: 'test title',
+            body: 'test body',
+            tags: ['foo', 'bar'],
+            searchTags: ['foo', 'bar'],
+            createAt: Date.now(),
+            updateAt: Date.now()
+          };
+          Item.create(item, function() {
+            nextTask(null);
+          });
+        },
+        function(nextTask) {
+          superagent
+            .post('http://localhost:' + port + '/items/1/like')
+            .set('Cookie', cookie)
+            .end(function(err, res) {
+              nextTask(err, res);
+            });
+        },
+        function(res, nextTask) {
+          expect(res.status).to.equal(200);
+          Item.findItem(1, function(err, item) {
+            nextTask(err, item);
+          });
+        }
+      ], function(err, item) {
+        if (err) return done(err);
+        expect(item.likes).to.contain(1);
+        expect(item.likes).have.length(1);
+        done();
+      });
     });
+    it('anonymous user should like', function(done) {
+      var cookie;
+      async.waterfall([
+        // create dummy data
+        function(nextTask) {
+          superagent
+            .get('http://localhost:' + port + '/debug/login')
+            .end(function(res) {
+              cookie = res.headers['set-cookie'][0];
+              nextTask();
+            });
+        },
+        function(nextTask) {
+          User.findOne({
+            id: 1
+          }, function(err, user) {
+            nextTask(err, user);
+          });
+        },
+        function(user, nextTask) {
+          var item = {
+            id: '1',
+            ownerId: 1,
+            owner: user._id,
+            title: 'test title',
+            body: 'test body',
+            tags: ['foo', 'bar'],
+            searchTags: ['foo', 'bar'],
+            createAt: Date.now(),
+            updateAt: Date.now()
+          };
+          Item.create(item, function() {
+            nextTask(null);
+          });
+        },
+        function(nextTask) {
+          // anonymous user
+          superagent
+            .post('http://localhost:' + port + '/items/1/like')
+            .end(function(err, res) {
+              nextTask(err, res);
+            });
+        },
+        function(res, nextTask) {
+          expect(res.status).to.equal(200);
+          Item.findItem(1, function(err, item) {
+            nextTask(err, item);
+          });
+        }
+      ], function(err, item) {
+        if (err) return done(err);
+        expect(item.likes).to.contain(-1);
+        expect(item.likes).have.length(1);
+        done();
+      });
+    });
+  });
+
+  afterEach(function() {
+    Item.remove({}, function() {});
   });
 
   after(function() {
