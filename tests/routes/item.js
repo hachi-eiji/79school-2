@@ -13,13 +13,13 @@ var User = require('../../models/index').User;
 
 describe('item', function () {
   this.timeout(5000);
-  before(function() {
+  before(function () {
     startup();
   });
 
   describe('register', function () {
     var cookie;
-    it('should create item object', function(done) {
+    it('should create item object', function (done) {
       async.waterfall([
         // ダミーログイン
         function (nextTask) {
@@ -74,7 +74,7 @@ describe('item', function () {
   });
 
   describe('get', function () {
-    it('should get item object', function(done) {
+    it('should get item object', function (done) {
       var createAt = new Date(2014, 11, 1);
       var updateAt = new Date(2014, 11, 2);
       async.waterfall([
@@ -102,7 +102,7 @@ describe('item', function () {
         function (user, nextTask) {
           superagent
             .get('http://localhost:' + port + '/items/1')
-            .end(function(res) {
+            .end(function (res) {
               nextTask(null, user, res);
             });
         }
@@ -120,7 +120,7 @@ describe('item', function () {
 
   describe('edit', function () {
     var cookie;
-    it('should update item', function(done) {
+    it('should update item', function (done) {
       async.waterfall([
         // ダミーログイン
         function (nextTask) {
@@ -189,27 +189,52 @@ describe('item', function () {
     });
   });
 
-  describe('like request ', function() {
-    it('should create like on item collection', function(done) {
+  describe('like request ', function () {
+    it('should reposed 404 status when user like to no exists item', function (done) {
       var cookie;
       async.waterfall([
         // create dummy data
-        function(nextTask) {
+        function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function(res) {
+            .end(function (res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
         },
-        function(nextTask) {
+        function (nextTask) {
+          superagent
+            .post('http://localhost:' + port + '/items/1/like')
+            .set('Cookie', cookie)
+            .end(function (err, res) {
+              nextTask(err, res);
+            });
+        }
+      ], function (err, res) {
+        expect(res.status).to.equal(404);
+        done();
+      });
+    });
+    it('should create like on item collection', function (done) {
+      var cookie;
+      async.waterfall([
+        // create dummy data
+        function (nextTask) {
+          superagent
+            .get('http://localhost:' + port + '/debug/login')
+            .end(function (res) {
+              cookie = res.headers['set-cookie'][0];
+              nextTask();
+            });
+        },
+        function (nextTask) {
           User.findOne({
             id: 1
-          }, function(err, user) {
+          }, function (err, user) {
             nextTask(err, user);
           });
         },
-        function(user, nextTask) {
+        function (user, nextTask) {
           var item = {
             id: '1',
             ownerId: 1,
@@ -221,51 +246,51 @@ describe('item', function () {
             createAt: Date.now(),
             updateAt: Date.now()
           };
-          Item.create(item, function() {
+          Item.create(item, function () {
             nextTask(null);
           });
         },
-        function(nextTask) {
+        function (nextTask) {
           superagent
             .post('http://localhost:' + port + '/items/1/like')
             .set('Cookie', cookie)
-            .end(function(err, res) {
+            .end(function (err, res) {
               nextTask(err, res);
             });
         },
-        function(res, nextTask) {
+        function (res, nextTask) {
           expect(res.status).to.equal(200);
-          Item.findItem(1, function(err, item) {
+          Item.findItem(1, function (err, item) {
             nextTask(err, item);
           });
         }
-      ], function(err, item) {
+      ], function (err, item) {
         if (err) return done(err);
         expect(item.likes).to.contain(1);
         expect(item.likes).have.length(1);
         done();
       });
     });
-    it('anonymous user should like', function(done) {
+    it('anonymous user should not like', function (done) {
       var cookie;
       async.waterfall([
         // create dummy data
-        function(nextTask) {
+        function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function(res) {
+            .end(function (res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
         },
-        function(nextTask) {
+        function (nextTask) {
           User.findOne({
             id: 1
-          }, function(err, user) {
+          }, function (err, user) {
             nextTask(err, user);
           });
         },
-        function(user, nextTask) {
+        function (user, nextTask) {
           var item = {
             id: '1',
             ownerId: 1,
@@ -277,28 +302,20 @@ describe('item', function () {
             createAt: Date.now(),
             updateAt: Date.now()
           };
-          Item.create(item, function() {
+          Item.create(item, function () {
             nextTask(null);
           });
         },
-        function(nextTask) {
+        function (nextTask) {
           // anonymous user
           superagent
             .post('http://localhost:' + port + '/items/1/like')
-            .end(function(err, res) {
+            .end(function (err, res) {
               nextTask(err, res);
             });
-        },
-        function(res, nextTask) {
-          expect(res.status).to.equal(200);
-          Item.findItem(1, function(err, item) {
-            nextTask(err, item);
-          });
         }
-      ], function(err, item) {
-        if (err) return done(err);
-        expect(item.likes).to.contain(-1);
-        expect(item.likes).have.length(1);
+      ], function (err, res) {
+        expect(res.status).to.equal(403);
         done();
       });
     });

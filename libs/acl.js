@@ -26,3 +26,12 @@ exports.myItem = function (req, res, next) {
     return next(e);
   });
 };
+
+exports.login = function (req, res, next) {
+  if (req.session && req.session.user) {
+    return next();
+  }
+  var e = new Error("not login");
+  e.status = 403;
+  return next(e);
+};

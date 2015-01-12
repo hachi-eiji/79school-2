@@ -154,13 +154,15 @@ exports.remove = function (req, res, next) {
  * @param next
  */
 exports.like = function (req, res, next) {
-  var userId = req.session && req.session.user && req.session.user.id || -1;
+  var userId = req.session.user.id;
   var itemId = req.params.id;
   async.waterfall([
     function (nextTask) {
       Item.findItem(itemId, function (err, item) {
         if (!item) {
-          nextTask(new Error('item not found'), null);
+          var e = new Error('item not found');
+          e.status = 404;
+          nextTask(e);
         }
         nextTask(err);
       });
@@ -171,8 +173,8 @@ exports.like = function (req, res, next) {
       });
     }
   ], function (err) {
-    if(err) {
-      res.status(500).end();
+    if (err) {
+      return next(err);
     }
     res.status(200).end();
   });
