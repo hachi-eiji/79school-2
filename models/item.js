@@ -1,5 +1,8 @@
 'use strict';
 var mongoose = require('mongoose');
+var dateformat = require('dateformat');
+var async = require('async');
+var _ = require('lodash');
 
 var schema = new mongoose.Schema({
   id: {
@@ -70,6 +73,52 @@ schema.statics.search = function (condition, callback) {
 
 schema.statics.findItem = function (id, callback) {
   this.findOne({id: id}).populate('owner').exec(callback);
+};
+
+/**
+ * get timeLine
+ * @param {Object} query - 条件
+ * @param {Object} sort - ソート条件
+ * @param {Number} offset - 開始位置
+ * @param {Number} limit - 1ページあたりの表示件数
+ * @param {Function} callback - callback function
+ */
+schema.statics.getTimeLine = function (query, sort, offset, limit, callback) {
+  var self = this;
+  async.waterfall([
+    function (next) {
+      var condition = {
+        offset: offset || 0,
+        limit: limit || 50,
+        query: query || {},
+        sort: sort || {updateAt: 'desc'}
+      };
+      self.search(condition, function (err, items) {
+        next(err, items);
+      });
+    }
+  ], function (err, items) {
+    if (err) {
+      callback(err, []);
+    }
+    var timeLine = [];
+    _.forEach(items, function (item) {
+      timeLine.push({
+        id: item.id,
+        owner: {
+          id: item.ownerId,
+          loginId: item.owner.loginId,
+          avatarUrl: item.owner.avatarUrl
+        },
+        title: item.title,
+        body: item.body,
+        likeCount: item.likes.length,
+        tags: item.tags,
+        createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd')
+      });
+    });
+    callback(null, timeLine);
+  });
 };
 
 module.exports = mongoose.model('Item', schema);
