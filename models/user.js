@@ -16,6 +16,10 @@ var schema = new mongoose.Schema({
       unique: true
     }
   },
+  accountType: {
+    type: String,
+    enum: 'github twitter'.split(' ')
+  },
   name: {
     type: String,
     required: true
@@ -30,5 +34,4 @@ var schema = new mongoose.Schema({
     default: Date.now
   }
 });
-
 module.exports = mongoose.model('User', schema);

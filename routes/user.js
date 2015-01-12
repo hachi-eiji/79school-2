@@ -43,7 +43,8 @@ exports.gitHubAuthCallback = function (req, res, next) {
       }
       User.create({
         id: gitHubUser.id,
-        loginId: gitHubUser.login,
+        loginId: gitHubUser.login + '@github',
+        accountType: 'github',
         name: gitHubUser.name,
         avatarUrl: gitHubUser.avatar_url
       }, function (err, user) {
