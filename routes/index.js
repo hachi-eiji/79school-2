@@ -8,7 +8,7 @@ exports.reply = require('./reply');
 var Item = require('../models').Item;
 
 exports.index = function (req, res, next) {
-  Item.getTimeLine({}, {updateAt: 'desc'}, 0, 50, function (err, timeLine) {
+  Item.getTimeLine({}, {}, 0, 50, function (err, timeLine) {
     if (err) {
       return next(err);
     }
