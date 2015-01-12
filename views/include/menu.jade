@@ -27,8 +27,9 @@ nav.navbar.navbar-default(role="navigation")
               | GitHubでLogin
           else
             li.dropdown
-              a.dropdown-toggle(data-toggle="dropdown", role="button",aria-expanded="false")= 'ようこそ ' + user.loginId
-              span.caret
+              a.dropdown-toggle(data-toggle="dropdown", role="button",aria-expanded="false")
+                img(src=user.avatarUrl, width="24px" height="24px")
+                span.caret
               ul.dropdown-menu(role="menu")
                 li
                   a(href="/user/logout")
