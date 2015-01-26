@@ -5,10 +5,10 @@
 exports.item = require('./item');
 exports.user = require('./user');
 exports.reply = require('./reply');
-var Item = require('../models').Item;
+var service = require('../libs/service');
 
 exports.index = function (req, res, next) {
-  Item.getTimeLine({}, {}, 0, 50, function (err, timeLine) {
+  service.item.getTimeLine(1, function (err, timeLine) {
     if (err) {
       return next(err);
     }
