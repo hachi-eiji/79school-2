@@ -16,7 +16,6 @@ machine:
 dependencies:
   pre:
     - pip install 'fabric==1.8.3' 'requests==2.2.1'
-    - git clone https://github.com/a2design-company/hipster && python hipster/setup.py install
     - npm install
 test:
   override:
