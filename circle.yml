@@ -16,10 +16,10 @@ machine:
 dependencies:
   pre:
     - pip install 'fabric==1.8.3' 'requests==2.2.1'
-    - npm install
-test:
-  override:
-    - npm test
+      #    - npm install
+      #test:
+      #  override:
+      #    - npm test
 deployment:
   feature:
     branch: /master/
