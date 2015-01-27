@@ -14,6 +14,8 @@ machine:
   environment:
     TARGET_ENV: dev1
 dependencies:
+  cache_directories:
+    - "some_directory"
   pre:
     - pip install 'fabric==1.8.3' 'requests==2.2.1'
       #    - npm install
