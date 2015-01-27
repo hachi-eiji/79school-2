@@ -13,13 +13,10 @@ machine:
       - memcached
   environment:
     TARGET_ENV: dev1
-general:
-  artifacts:
-    - "~/${CIRCLE_PROJECT_REPONAME}/target/*.war"
-    - "~/${CIRCLE_PROJECT_REPONAME}/target/*.jar"
 dependencies:
   pre:
     - pip install 'fabric==1.8.3' 'requests==2.2.1'
+    - git clone https://github.com/a2design-company/hipster && python hipster/setup.py install
     - npm install
 test:
   override:
