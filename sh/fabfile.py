@@ -4,12 +4,12 @@ from fabric.utils import abort
 from fabric.colors import *
 import os
 import json
-from hipster import Hipster
+
 
 @task
-def test():
-    hipchat = Hipster(os.environ['hipchat_token'])
-    hipchat.send_messages(room_id=os.environ['hipchat_room'], sender='552760', message='Hello, room!')
+def mvn_test():
+    local("mvn clean test")
+    print(green("finish test"))
 
 @task
 def deploy():
