@@ -24,6 +24,6 @@ dependencies:
       #    - npm test
 deployment:
   feature:
-    branch: /master/
+    branch: master
     commands:
       - fab -f sh/fabfile deploy
