@@ -2,15 +2,8 @@
  * @module routes/user
  */
 'use strict';
-var async = require('async');
 var User = require('../models').User;
-var gitHubApi = require('../libs/gitHubApi');
-
-exports.login = function (req, res, next) {
-};
-
-exports.create = function (req, res, next) {
-};
+var LoginFactory = require('../libs/service/login');
 
 exports.logout = function (req, res, next) {
   req.session.destroy();
@@ -22,36 +15,7 @@ exports.gitHubAuthCallback = function (req, res, next) {
   if (req.session && req.session.user) {
     res.redirect(referer);
   }
-
-  async.waterfall([
-    function (callback) {
-      gitHubApi.getUser(req.query.code, function (err, gitHubUser) {
-        if (!gitHubUser) {
-          callback(new Error('can not get user'));
-        }
-        callback(err, gitHubUser);
-      });
-    },
-    function (gitHubUser, callback) {
-      User.findOne({id: gitHubUser.id}, function (err, user) {
-        callback(err, gitHubUser, user);
-      });
-    },
-    function (gitHubUser, user, callback) {
-      if (user) {
-        callback(null, user);
-      }
-      User.create({
-        id: gitHubUser.id,
-        loginId: gitHubUser.login + '@github',
-        accountType: 'github',
-        name: gitHubUser.name,
-        avatarUrl: gitHubUser.avatar_url
-      }, function (err, user) {
-        callback(err, user);
-      });
-    }
-  ], function (err, user) {
+  LoginFactory.create(LoginFactory.Type.GitHub).login(req.query.code, function (err, user) {
     if (err) {
       return next(err);
     }
