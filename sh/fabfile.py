@@ -1,9 +1,10 @@
-from fabric.api import local,run, task
-from fabric.state import env
+from fabric.api import local,run, task,env
 from fabric.decorators import task
+from fabric.utils import abort
 from fabric.colors import *
-from fabric.state import env
 import os
+import json
+
 
 @task
 def mvn_test():

@@ -65,3 +65,7 @@ tasks
 - [ ] 検索
 - [ ] 記事詳細に投稿者の詳細情報出す
 - [ ] プロフィール系の変更
+
+Circle CI
+===
+[![Circle CI](https://circleci.com/gh/hachi-eiji/79school-2/tree/master.svg?style=svg)](https://circleci.com/gh/hachi-eiji/79school-2/tree/master)

@@ -5,7 +5,7 @@ machine:
   python:
     version: 2.7.3
   node:
-    version: 0.10.22
+    version: 0.10.28
   ruby:
     version: 2.1.3
   services:
@@ -13,19 +13,17 @@ machine:
       - memcached
   environment:
     TARGET_ENV: dev1
-general:
-  artifacts:
-    - "~/${CIRCLE_PROJECT_REPONAME}/target/*.war"
-    - "~/${CIRCLE_PROJECT_REPONAME}/target/*.jar"
 dependencies:
+  cache_directories:
+    - "some_directory"
   pre:
     - pip install 'fabric==1.8.3' 'requests==2.2.1'
-    - npm install
-test:
-  override:
-    - npm test
+      #    - npm install
+      #test:
+      #  override:
+      #    - npm test
 deployment:
   feature:
-    branch: /master/
+    branch: master
     commands:
       - fab -f sh/fabfile deploy
