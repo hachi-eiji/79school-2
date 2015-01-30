@@ -1,8 +1,6 @@
 'use strict';
 var mongoose = require('mongoose');
-var dateformat = require('dateformat');
 var async = require('async');
-var _ = require('lodash');
 
 var schema = new mongoose.Schema({
   id: {
@@ -97,28 +95,7 @@ schema.statics.getTimeLine = function (query, sort, offset, limit, callback) {
         next(err, items);
       });
     }
-  ], function (err, items) {
-    if (err) {
-      callback(err, []);
-    }
-    var timeLine = [];
-    _.forEach(items, function (item) {
-      timeLine.push({
-        id: item.id,
-        owner: {
-          id: item.ownerId,
-          loginId: item.owner.loginId,
-          avatarUrl: item.owner.avatarUrl
-        },
-        title: item.title,
-        body: item.body,
-        likeCount: item.likes.length,
-        tags: item.tags,
-        createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd')
-      });
-    });
-    callback(null, timeLine);
-  });
+  ], callback);
 };
 
 module.exports = mongoose.model('Item', schema);
