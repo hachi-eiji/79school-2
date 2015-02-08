@@ -17,7 +17,8 @@ describe('service/login', function () {
         .reply(200, {
           login: 'test_login',
           id: 1,
-          avatar_url: 'http://www.example.com'
+          avatar_url: 'http://www.example.com',
+          name: 'dummy_user'
         });
       done();
     });
