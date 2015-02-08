@@ -4,6 +4,7 @@
 'use strict';
 var User = require('../models').User;
 var LoginFactory = require('../libs/service/login');
+var config = require('../libs/config');
 
 exports.logout = function (req, res, next) {
   req.session.destroy();
@@ -15,7 +16,7 @@ exports.gitHubAuthCallback = function (req, res, next) {
   if (req.session && req.session.user) {
     res.redirect(referer);
   }
-  LoginFactory.create(LoginFactory.Type.GitHub).login(req.query.code, function (err, user) {
+  LoginFactory.create(LoginFactory.Type.GitHub, config.gitHubAuth).login(req.query.code, function (err, user) {
     if (err) {
       return next(err);
     }

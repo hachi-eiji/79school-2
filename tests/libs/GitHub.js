@@ -9,16 +9,16 @@ var expect = require('expect.js');
 
 describe('libs/GitHubApi', function() {
   var config = {
-    host: 'localhost',
-    port: 3001,
     client_id: 'dummy_id',
-    client_secret: 'dummy_secret',
+    secret: 'dummy_secret',
     auth: {
+      host: 'localhost',
+      port: 3001,
       path: '/auth'
     }
   };
   before(function(done) {
-    nock('https://' + config.host + ':' + config.port)
+    nock('https://' + config.auth.host + ':' + config.auth.port)
       .log(console.log)
       .post(config.auth.path, 'client_id=dummy_id&client_secret=dummy_secret&code=valid_code')
       .reply(200, {

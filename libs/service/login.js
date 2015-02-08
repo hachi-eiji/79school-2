@@ -5,7 +5,7 @@
  */
 'use strict';
 var async = require('async');
-var gitHubApi = require('../gitHubApi');
+var GitHubApi = require('../gitHubApi');
 var User = require('../../models').User;
 
 module.exports = LoginFactory;
@@ -22,25 +22,27 @@ LoginFactory.Type = {
  * create factory
  * @param {LoginFactory.Type} type
  */
-LoginFactory.create = function (type) {
+LoginFactory.create = function (type, config) {
   if (type === LoginFactory.Type.GitHub) {
-    return new GitHubLogin();
+    return new GitHubLogin(config);
   }
   throw new Error('illegal argument error. type is ' + type);
 };
 
-
 /**
  * GitHub Login
  */
-function GitHubLogin() {
+function GitHubLogin(config) {
+  this.config = config;
 }
+
 /**
  * login
  * @param {String} code
  * @param {function} callback
  */
 GitHubLogin.prototype.login = function (code, callback) {
+  var gitHubApi = new GitHubApi(this.config);
   async.waterfall([
 
     function (next) {
