@@ -66,5 +66,8 @@
   "onevar": false,
   "white": false,
 
-  "es3":true
+  "es3":true,
+  "globals" : {
+    "_": true
+  }
 }
