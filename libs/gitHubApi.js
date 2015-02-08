@@ -8,10 +8,13 @@ var querystring = require('querystring');
 module.exports = GitHubApi;
 
 function GitHubApi(config) {
-  this.config = config || {
-    host: 'github.com',
-    port: 443
-  };
+  this.config = config || {};
+  this.config.host = this.config.host || 'api.github.com';
+  this.config.port = this.config.port || 443;
+
+  this.config.auth = this.config.auth || {};
+  this.config.auth.host = this.config.auth.host || 'github.com';
+  this.config.auth.port = this.config.auth.port || 443;
 }
 
 /**
@@ -19,9 +22,9 @@ function GitHubApi(config) {
  * @param {string} code - code
  * @param {Function} callback - callback method
  */
-GitHubApi.prototype.getUser = function(code, callback) {
+GitHubApi.prototype.getUser = function (code, callback) {
   var self = this;
-  self._getAccessToken(code, function(err, accessToken) {
+  self._getAccessToken(code, function (err, accessToken) {
     if (err) {
       return callback(err);
     }
@@ -35,7 +38,7 @@ GitHubApi.prototype.getUser = function(code, callback) {
  * @param {string} code - code
  * @param {Function} callback - callback method
  */
-GitHubApi.prototype._getAccessToken = function(code, callback) {
+GitHubApi.prototype._getAccessToken = function (code, callback) {
   if (!code) {
     var error = new Error('code is undefined');
     return callback(error);
@@ -44,38 +47,43 @@ GitHubApi.prototype._getAccessToken = function(code, callback) {
   var config = this.config;
   var data = querystring.stringify({
     client_id: config.client_id,
-    client_secret: config.client_secret,
+    client_secret: config.secret,
     code: code
   });
 
   var option = {
-    hostname: config.host,
-    port: config.port,
+    hostname: config.auth.host,
+    port: config.auth.port,
     path: (config.auth && config.auth.path) || '/login/oauth/access_token',
     method: (config.auth && config.auth.method) || 'POST',
-    hearders: {
+    headers: {
       'Content-Length': Buffer.byteLength(data),
       'Accept': 'application/json'
     }
   };
-  var req = https.request(option, function(res) {
+  var req = https.request(option, function (res) {
     res.setEncoding('utf-8');
     if (res.statusCode >= 400) {
       return callback(new Error('status code is ' + res.statusCode));
     }
     var responseData = '';
-    res.on('data', function(chunk) {
+    res.on('data', function (chunk) {
       responseData += chunk;
     });
-    res.on('end', function() {
-      var json = JSON.parse(responseData);
-      if (json.error) {
-        return callback(new Error(json.error));
+    res.on('end', function () {
+      try {
+        var json = JSON.parse(responseData);
+        if (json.error) {
+          return callback(new Error(json.error));
+        }
+        return callback(null, json.access_token);
+      } catch (e) {
+        return callback(new Error('json parse error. ' + responseData));
       }
-      return callback(null, json.access_token);
+
     });
   });
-  req.on('error', function(err) {
+  req.on('error', function (err) {
     return callback(err, null);
   });
   req.write(data + '\n');
@@ -87,7 +95,8 @@ GitHubApi.prototype._getAccessToken = function(code, callback) {
  * @param {string} accessToken - access token
  * @param {Function} callback - callback
  */
-GitHubApi.prototype._getUser = function(accessToken, callback) {
+GitHubApi.prototype._getUser = function (accessToken, callback) {
+  var config = this.config;
   var req = https.request({
     hostname: config.host,
     port: config.port,
@@ -98,21 +107,21 @@ GitHubApi.prototype._getUser = function(accessToken, callback) {
       'Authorization': 'token ' + accessToken,
       'User-Agent': 'test'
     }
-  }, function(res) {
+  }, function (res) {
     res.setEncoding('utf-8');
     var statusCode = res.statusCode;
     var userData = '';
-    res.on('data', function(chunk) {
+    res.on('data', function (chunk) {
       userData += chunk;
     });
-    res.on('end', function() {
+    res.on('end', function () {
       var json = JSON.parse(userData);
       if (statusCode >= 400) {
         return callback(new Error(json.message));
       }
       return callback(null, json);
     });
-  }).on('error', function(err) {
+  }).on('error', function (err) {
     return callback(err, null);
   });
   req.end();
