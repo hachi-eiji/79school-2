@@ -2,7 +2,7 @@
 'use strict';
 
 var nock = require('nock');
-var GitHubApi = require('../../libs/GitHubApi');
+var GitHubApi = require('../../libs/gitHubApi');
 var expect = require('expect.js');
 
 
