@@ -10,3 +10,6 @@
 /// <reference path="debug/debug.d.ts" />
 /// <reference path="serve-favicon/serve-favicon.d.ts" />
 /// <reference path="body-parser/body-parser.d.ts" />
+/// <reference path="expect.js/expect.js.d.ts" />
+/// <reference path="nock/nock.d.ts" />
+/// <reference path="mocha/mocha.d.ts" />
