@@ -30,6 +30,7 @@
     "jsdoc": "^3.3.0-alpha13",
     "mocha": "^2.0.1",
     "nock": "^0.59.1",
-    "superagent": "^0.21.0"
+    "superagent": "^0.21.0",
+    "tsd": "^0.5.7"
   }
 }
