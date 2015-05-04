@@ -93,7 +93,7 @@ class GitHubApi {
     req.end();
   }
 
-  _getUser(accessToken:string, callback:(err:Error, user?:Object) => void):void {
+  _getUser(accessToken:string, callback:(err:Error, user?:any) => void):void {
     var config = this.config;
     var req = https.request({
       hostname: config.host,
