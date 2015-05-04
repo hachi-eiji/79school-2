@@ -4,8 +4,7 @@
 
 import nock = require('nock');
 import expect = require('expect.js');
-import GitHubModule = require('../../libs/gitHubApi');
-var GitHubApi = GitHubModule.GitHubApi;
+import GitHubApi = require('../../libs/gitHubApi');
 
 describe('lib/GitHubApi', function () {
   // TODO: 型指定できないので、interfaceとかで指定してあげるといい

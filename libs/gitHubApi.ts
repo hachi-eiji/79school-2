@@ -4,42 +4,9 @@ import https = require('https');
 import http = require('http');
 import querystring = require('querystring');
 
-/**
- * GitHubAPI configuration
- */
-export interface GitHubApiConfig {
-  clientId:string;
-  secret: string;
-  host:string;
-  port:number;
-  auth: {
-    host:string;
-    port:number;
-    path:string;
-    method:string;
-  };
-  user: {
-    path:string;
-    method:string;
-  }
-}
+export = GitHubApi;
 
-export interface GitHubApiConfigOption {
-  host:string;
-  port:number;
-  auth: {
-    host:string;
-    port:number;
-    path:string;
-    method:string;
-  };
-  user: {
-    path:string;
-    method:string;
-  }
-}
-
-export class GitHubApi {
+class GitHubApi {
   private config:GitHubApiConfig;
 
   constructor(clientId:string, secret:string, option?:GitHubApiConfigOption) {
@@ -159,3 +126,39 @@ export class GitHubApi {
     req.end();
   }
 }
+
+/**
+ * GitHubAPI configuration
+ */
+interface GitHubApiConfig {
+  clientId:string;
+  secret: string;
+  host:string;
+  port:number;
+  auth: {
+    host:string;
+    port:number;
+    path:string;
+    method:string;
+  };
+  user: {
+    path:string;
+    method:string;
+  }
+}
+
+interface GitHubApiConfigOption {
+  host:string;
+  port:number;
+  auth: {
+    host:string;
+    port:number;
+    path:string;
+    method:string;
+  };
+  user: {
+    path:string;
+    method:string;
+  }
+}
+
