@@ -13,3 +13,4 @@
 /// <reference path="expect.js/expect.js.d.ts" />
 /// <reference path="nock/nock.d.ts" />
 /// <reference path="mocha/mocha.d.ts" />
+/// <reference path="marked/marked.d.ts" />
