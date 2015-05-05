@@ -1,4 +1,4 @@
-## for circleCI 
+## for circleCI
 machine:
   timezone:
     Asia/Tokyo
@@ -18,7 +18,7 @@ dependencies:
     - "some_directory"
   pre:
     - pip install 'fabric==1.8.3' 'requests==2.2.1'
-      #    - npm install
+    - npm install -g typescript@1.4.1 tsd@0.5.7
       #test:
       #  override:
       #    - npm test
