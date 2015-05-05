@@ -13,10 +13,10 @@ class GitHubApi {
     this.config = {
       clientId: clientId,
       secret: secret,
-      host: option ? option.host : 'api.github.com',
-      port: option ? option.port : 443,
-      auth: option ? option.auth : {host: 'github.com', port: 443, path: '/login/oauth/access_token', method: 'POST'},
-      user: option ? option.user : {path: '/user', method: 'GET'}
+      host: option && option.host ? option.host : 'api.github.com',
+      port: option && option.port ? option.port : 443,
+      auth: option && option.auth ? option.auth : {host: 'github.com', port: 443, path: '/login/oauth/access_token', method: 'POST'},
+      user: option && option.user ? option.user : {path: '/user', method: 'GET'}
     };
   }
 
@@ -25,7 +25,7 @@ class GitHubApi {
    * @param {string} code - code
    * @param {Function} callback - callback method
    */
-  getUser(code:string, callback:(err:Error, accessToken?:string)=>void):void {
+  getUser(code:string, callback:(err:Error, user?:any)=>void):void {
     var self = this;
     self._getAccessToken(code, function (err, accessToken) {
       if (err) {

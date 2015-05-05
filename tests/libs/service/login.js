@@ -30,7 +30,9 @@ describe('service/login', function () {
         secret: 'test_client_secret',
         auth: {
           host: 'localhost',
-          port: 3001
+          port: 3001,
+          path: '/login/oauth/access_token',
+          method: 'POST'
         }
       };
       LoginFactory.create(LoginFactory.Type.GitHub, config).login('test', function (err, user) {
