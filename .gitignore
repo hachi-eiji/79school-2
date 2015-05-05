@@ -1,10 +1,9 @@
 # Created by https://www.gitignore.io
 
 ### TypeScript ###
+*.js.map
 tests/models/*.js
-tests/models/*.js.map
 models/*.js
-models/*.js.map
 
 ### Node ###
 # Logs
