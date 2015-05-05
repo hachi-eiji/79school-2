@@ -1,4 +1,4 @@
-import Error = require('error')
+import Error = require('Error')
 import express = require('express');
 import session = require('session');
 import itemModule = require('../models/itemModule');
