@@ -1,5 +1,10 @@
-'use strict';
-var mongoose = require('mongoose');
+///<reference path="../typings/mongoose/mongoose.d.ts"/>
+
+import mongoose = require('mongoose');
+import replyModule = require('replyModule');
+import ReplyDocument = replyModule.reply.ReplyDocument;
+import ReplyModel = replyModule.reply.ReplyModel;
+
 var schema = new mongoose.Schema({
   id: {
     type: String,
@@ -29,8 +34,9 @@ var schema = new mongoose.Schema({
   }
 });
 
-schema.statics.list = function (limit, offset, query, callback) {
+schema.static('list', function (limit:number, offset:number, query:Object, callback:(err:any, result:ReplyDocument[])=>void):void {
   this.find(query).populate('owner').sort({createAt: 'desc'}).skip(offset).limit(limit).exec(callback);
-};
+});
 
-module.exports = mongoose.model('Reply', schema);
+var model:ReplyModel = <ReplyModel>mongoose.model('Reply', schema);
+export = model;
