@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "jsdoc": "jsdoc -d ./docs/ libs/*.js routes/*.js",
-    "pretest": "tsc @test.tscparams ./tests/**/*.ts ./models/*.ts ./libs/*.ts",
+    "pretest": "gulp compile-typescript",
     "test": "mocha --recursive tests/"
   },
   "dependencies": {
@@ -27,10 +27,15 @@
     "serve-favicon": "~2.1.3"
   },
   "devDependencies": {
+    "coffee-script": "^1.9.2",
     "expect.js": "^0.3.1",
+    "gulp": "^3.8.11",
+    "gulp-coffee": "^2.3.1",
+    "gulp-debug": "^2.0.1",
+    "gulp-typescript": "^2.6.0",
     "jsdoc": "^3.3.0-alpha13",
     "mocha": "^2.0.1",
     "nock": "^0.59.1",
-    "superagent": "^0.21.0"
+    "superagent": "^0.23.0"
   }
 }
