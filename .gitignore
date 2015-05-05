@@ -1,5 +1,11 @@
 # Created by https://www.gitignore.io
 
+### TypeScript ###
+tests/models/*.js
+tests/models/*.js.map
+models/*.js
+models/*.js.map
+
 ### Node ###
 # Logs
 logs
