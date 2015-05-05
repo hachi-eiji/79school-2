@@ -11,12 +11,8 @@ import ItemDocument = itemInterface.item.ItemDocument;
 
 describe('model/item', function () {
   before(function (done) {
-    mongoose.createConnection(process.env.NODE_MONGO_URL, {safe: true}, function (err:any) {
-      if (err) {
-        return done(err);
-      }
-      done();
-    })
+    mongoose.createConnection(process.env.NODE_MONGO_URL);
+    done();
   });
 
   describe('base', function () {
