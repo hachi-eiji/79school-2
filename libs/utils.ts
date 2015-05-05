@@ -22,7 +22,7 @@ export var markdownToHTML = (str:string):string => {
  * @param {...String} val - to MD5 values
  * @return {String} MD5
  */
-export var md5 = (...val:string[]):string => {
+export var toMd5 = (...val:string[]):string => {
   if (val.length === 0) {
     return '';
   }
