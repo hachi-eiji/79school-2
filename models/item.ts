@@ -5,10 +5,10 @@ import mongoose = require('mongoose');
 import Schema = mongoose.Schema;
 import Query = mongoose.Query;
 import async = require('async');
-import itemInterface = require('./itemInterface');
-import ItemDocument = itemInterface.item.ItemDocument;
-import ItemModel = itemInterface.item.ItemModel;
-import ItemSearchCondition = itemInterface.item.ItemSearchCondition;
+import itemModule = require('./itemModule');
+import ItemDocument = itemModule.item.ItemDocument;
+import ItemModel = itemModule.item.ItemModel;
+import ItemSearchCondition = itemModule.item.ItemSearchCondition;
 
 var schema:Schema = new Schema({
   id: {

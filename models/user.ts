@@ -1,7 +1,7 @@
 ///<reference path="../typings/mongoose/mongoose.d.ts"/>
 
 import mongoose = require('mongoose');
-import userModule = require('./userInterface');
+import userModule = require('./userModule');
 import UserDocument = userModule.user.UserDocument;
 import UserModel = userModule.user.UserModel;
 

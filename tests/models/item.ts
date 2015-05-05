@@ -8,9 +8,9 @@ import async = require('async');
 import mongoose = require('mongoose');
 import Model = mongoose.Model;
 import Item = require('../../models/item');
-import itemInterface = require('../../models/itemInterface');
-import ItemModel = itemInterface.item.ItemModel;
-import ItemDocument = itemInterface.item.ItemDocument;
+import itemModule = require('../../models/itemModule');
+import ItemModel = itemModule.item.ItemModel;
+import ItemDocument = itemModule.item.ItemDocument;
 
 describe('model/item', function () {
   this.timeout(5000);
