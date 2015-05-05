@@ -3,6 +3,7 @@
 ### TypeScript ###
 *.js.map
 tests/models/*.js
+libs/**/*.js
 models/*.js
 
 ### Node ###

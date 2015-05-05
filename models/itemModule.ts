@@ -4,7 +4,7 @@ module model.item {
   export interface ItemDocument extends mongoose.Document {
     id?: string;
     ownerId: number;
-    owner: Object;
+    owner: any;
     title: string;
     body: string;
     likes: number[];
