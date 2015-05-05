@@ -5,6 +5,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "jsdoc": "jsdoc -d ./docs/ libs/*.js routes/*.js",
+    "pretest": "tsd reinstall -o && tsc @test.tscparams ./tests/**/*.ts ./models/*.ts",
     "test": "mocha --recursive tests/"
   },
   "dependencies": {
