@@ -71,7 +71,8 @@ schema.static('findItem', function (id:string, callback:(err:any, result:ItemDoc
   this.findOne({id: id}).populate('owner').exec(callback);
 });
 
-schema.static('getTimeLine', (query = {}, sort = {updateAt: 'desc'}, offset = 0, limit = 50, callback?:(err:any, result:ItemDocument[])=>void) => {
+schema.static('getTimeLine', function(query = {}, sort = {updateAt: 'desc'}, offset = 0, limit = 50, callback?:(err:any, result:ItemDocument[])=>void):void {
+  var self = this;
   async.waterfall([
     function (next:any) {
       var condition = {
@@ -80,7 +81,7 @@ schema.static('getTimeLine', (query = {}, sort = {updateAt: 'desc'}, offset = 0,
         query: query,
         sort: sort
       };
-      this.search(condition, next);
+      self.search(condition, next);
     }
   ], callback);
 });

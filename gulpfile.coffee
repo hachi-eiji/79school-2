@@ -7,7 +7,7 @@ gulp.task 'ping', ->
   console.log 'pong'
 
 gulp.task 'compile-typescript', ->
-  gulp.src(['./tests/**/*.ts', './models/**/*.ts', './libs/**/*.ts', './routes/**/*.ts'], {base: './'})
+  gulp.src(['app.ts', './tests/**/*.ts', './models/**/*.ts', './libs/**/*.ts', './routes/**/*.ts'], {base: './'})
   .pipe(debug({title: 'compile source'}))
   .pipe(ts({
       noImplicitAny: true,

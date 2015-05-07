@@ -13,7 +13,7 @@ var Item = model.Item;
 var Reply = model.Reply;
 var LIMIT_PER_PAGE = 50;
 
-export function getTineLine(page:number, callback:(err:Error, timeLine?:TimeLine[])=>void):void {
+export function getTimeLine(page:number, callback:(err:Error, timeLine?:TimeLine[])=>void):void {
   page = page <= 0 ? 1 : page;
   var limit = LIMIT_PER_PAGE;
   var offset = (page - 1) * limit;
