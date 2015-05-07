@@ -8,6 +8,7 @@ module session {
     user?: User
   }
   export interface User {
+    _id:          string;
     id:           number;
     loginId:      string;
     accountType:  string;

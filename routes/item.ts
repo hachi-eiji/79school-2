@@ -1,7 +1,10 @@
-/**
- * @module routes/item
- */
-'use strict';
+///<reference path="../typings/express-session/express-session.d.ts"/>
+
+import express = require('express');
+import session = require('../libs/session');
+import itemModule = require('../models/itemModule');
+import ItemDocument = itemModule.item.ItemDocument;
+
 var utils = require('../libs').utils;
 var service = require('../libs/service');
 
@@ -12,8 +15,8 @@ var service = require('../libs/service');
  * @param next
  * @public
  */
-exports.show = function(req, res, next) {
-  service.item.getItem(req.params.id, function(err, item) {
+export var show = function (req:express.Request, res:express.Response, next:any) {
+  service.item.getItem(req.params.id, function (err:Error, item:ItemDocument) {
     if (err) {
       return next(err);
     }
@@ -27,14 +30,13 @@ exports.show = function(req, res, next) {
   });
 };
 
-
 /**
  * 新規登録画面の表示を行う.
  * @param req
  * @param res
  * @param next
  */
-exports.showCreate = function(req, res, next) {
+export var showCreate = function (req:express.Request, res:express.Response, next:any) {
   res.render('item/new');
 };
 
@@ -46,9 +48,9 @@ exports.showCreate = function(req, res, next) {
  * @param res
  * @param next
  */
-exports.register = function(req, res, next) {
+export var register = function (req:express.Request, res:express.Response, next:any) {
   var body = req.body;
-  service.item.create(req.session.user, body.title, body.body, body.tags, function(err){
+  service.item.create((<session.ApplicationSession>req.session).user, body.title, body.body, body.tags, function (err:Error) {
     if (err) {
       return next(err);
     }
@@ -62,8 +64,8 @@ exports.register = function(req, res, next) {
  * @param res
  * @param next
  */
-exports.showEdit = function(req, res, next) {
-  service.item.getItem(req.params.id, function(err, item) {
+export var showEdit = function (req:express.Request, res:express.Response, next:any) {
+  service.item.getItem(req.params.id, function (err:Error, item:ItemDocument) {
     if (err) {
       return next(err);
     }
@@ -80,11 +82,11 @@ exports.showEdit = function(req, res, next) {
  * @param res
  * @param next
  */
-exports.update = function(req, res, next) {
+export var update = function (req:express.Request, res:express.Response, next:any) {
   var id = req.params.id;
   var body = req.body;
 
-  service.item.update(id, body.title, body.body, body.tags, function(err){
+  service.item.update(id, body.title, body.body, body.tags, function (err:Error) {
     if (err) {
       return next(err);
     }
@@ -96,9 +98,9 @@ exports.update = function(req, res, next) {
 /**
  * 記事削除.
  */
-exports.remove = function(req, res, next) {
+export var remove = function (req:express.Request, res:express.Response, next:any) {
   var id = req.params.id;
-  service.item.remove(id, function(err) {
+  service.item.remove(id, function (err:Error) {
     if (err) {
       return next(err);
     }
@@ -112,11 +114,11 @@ exports.remove = function(req, res, next) {
  * @param res
  * @param next
  */
-exports.like = function(req, res, next) {
-  var userId = req.session.user.id;
+export var like = function (req:express.Request, res:express.Response, next:any) {
+  var userId = (<session.ApplicationSession>req.session).user.id;
   var itemId = req.params.id;
-  service.item.like(userId, itemId, function(err){
-    if(err){
+  service.item.like(userId, itemId, function (err:Error) {
+    if (err) {
       return next(err);
     }
     res.status(200).end();

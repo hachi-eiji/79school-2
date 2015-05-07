@@ -3,7 +3,7 @@ import mongoose = require('mongoose');
 module model.user {
   export interface UserDocument extends mongoose.Document {
     loginId:string;
-    accountType: accountType;
+    accountType: string;
     name:string;
     avatarUrl:string;
     createAt:number;
@@ -12,11 +12,6 @@ module model.user {
 
   export interface UserModel extends mongoose.Model<UserDocument> {
 
-  }
-
-  enum accountType{
-    github,
-    twitter
   }
 }
 export = model;

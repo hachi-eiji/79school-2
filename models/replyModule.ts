@@ -5,7 +5,7 @@ module model.reply {
   export interface ReplyDocument extends mongoose.Document {
     itemId: string;
     ownerId: number;
-    owner: Object;
+    owner: any;
     body: string;
     createAt: number;
   }

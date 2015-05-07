@@ -14,7 +14,7 @@ export var myItem = (req:express.Request, res:express.Response, next:any):void =
     var session:session.ApplicationSession = req.session;
     var user:session.User = session.user;
 
-    if (user && item.ownerId === user.id) {
+    if (user && item.ownerId === Number(user.id)) {
       return next();
     }
     var e:Error = new Error('could not get item');

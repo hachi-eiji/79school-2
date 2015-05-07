@@ -4,6 +4,7 @@
 *.js.map
 tests/models/*.js
 libs/**/*.js
+routes/**/*.js
 models/*.js
 
 ### Node ###
