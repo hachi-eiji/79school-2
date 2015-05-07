@@ -5,6 +5,7 @@
 
 interface ApplicationError extends Error {
   status?: number
+  stack?:any
 }
 
 export = ApplicationError;

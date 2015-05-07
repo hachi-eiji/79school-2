@@ -1,19 +1,27 @@
-'use strict';
-var express = require('express');
+///<reference path="typings/express-session/express-session.d.ts"/>
+///<reference path="typings/morgan/morgan.d.ts"/>
+///<reference path="typings/cookie-parser/cookie-parser.d.ts"/>
+///<reference path="typings/body-parser/body-parser.d.ts"/>
+///<reference path="typings/mongoose/mongoose.d.ts"/>
+
+import express = require('express');
+import session = require('./libs/session');
+import Error = require('./libs/Error');
+import logger = require('morgan');
+import cookieParser = require('cookie-parser');
+import bodyParser = require('body-parser');
+import mongoose = require('mongoose');
+
 var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var MongoSession = require('connect-mongo')(session);
-var bodyParser = require('body-parser');
 var http = require('http');
 var domain = require('domain');
-var mongoose = require('mongoose');
 var appLog = require('log4js').getLogger();
 var libs = require('./libs');
 var routes = require('./routes');
 
-mongoose.connect(libs.config.mongo.url, {safe: true}, function (err) {
+mongoose.connect(libs.config.mongo.url, {safe: true}, function (err:any) {
   if (err) {
     appLog.fatal('can not connect to MongoDB', err.stack);
     process.exit(1);
@@ -45,15 +53,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // uncaught exception.
 app.use(function (req, res, next) {
   var d = domain.create();
-  d.on('error', function (err) {
+  d.on('error', function (err:any) {
     appLog.error(err.stack);
   });
   d.run(next);
 });
 
 app.use(function (req, res, next) {
-  if (req.session && req.session.user) {
-    res.locals.user = req.session.user;
+  if (req.session && (<session.ApplicationSession>req.session).user) {
+    res.locals.user = (<session.ApplicationSession>req.session).user;
   }
   next();
 });
@@ -80,7 +88,7 @@ app.use('/debug/login', routes.user.debugLogin);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
-  var err = new Error('Not Found');
+  var err:Error = new Error('Not Found');
   err.status = 404;
   next(err);
 });
@@ -90,7 +98,7 @@ app.use(function (req, res, next) {
 // development error handler
 // will print stacktrace
 if (app.get('env') === 'development') {
-  app.use(function (err, req, res, next) {
+  app.use(function (err:Error, req:express.Request, res:express.Response, next:Function) {
     appLog.error(err.stack);
     res.status(err.status || 500);
     res.render('error', {
@@ -102,7 +110,7 @@ if (app.get('env') === 'development') {
 
 // production error handler
 // no stacktraces leaked to user
-app.use(function (err, req, res, next) {
+app.use(function (err:Error, req:express.Request, res:express.Response, next:Function) {
   appLog.error(err.stack);
   res.status(err.status || 500);
   res.render('error', {
