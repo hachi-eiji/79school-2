@@ -8,7 +8,7 @@ var User = require('../models').User;
 var LoginFactory = require('../libs/service/login');
 var config = require('../libs/config');
 
-export var logout = function (req:express.Request, res:express.Response, next:any) {
+export var logout = function (req:express.Request, res:express.Response, next:Function) {
   req.session.destroy(function (err:any) {
     if (err) {
       return next(err);
@@ -17,7 +17,7 @@ export var logout = function (req:express.Request, res:express.Response, next:an
   });
 };
 
-export var gitHubAuthCallback = function (req:express.Request, res:express.Response, next:any) {
+export var gitHubAuthCallback = function (req:express.Request, res:express.Response, next:Function) {
   var referer = req.headers['referer'] || '/';
 
   var session = <session.ApplicationSession>req.session;
@@ -42,7 +42,7 @@ export var gitHubAuthCallback = function (req:express.Request, res:express.Respo
   })
 };
 
-export var debugLogin = function (req:express.Request, res:express.Response, next:any) {
+export var debugLogin = function (req:express.Request, res:express.Response, next:Function) {
   User.findOne({id: 1}, function (err:any, user:UserDocument) {
     if (err) {
       return next(err);

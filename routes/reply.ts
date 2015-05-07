@@ -9,7 +9,7 @@ var utils = require('../libs').utils;
 var markdownToHTML = utils.markdownToHTML;
 var Reply = require('../models').Reply;
 
-export var register = function (req:express.Request, res:express.Response, next:any) {
+export var register = function (req:express.Request, res:express.Response, next:Function) {
   var body = req.body;
   var itemId = body.itemId;
   var time = Date.now();
@@ -31,7 +31,7 @@ export var register = function (req:express.Request, res:express.Response, next:
   });
 };
 
-export var getList = function (req:express.Request, res:express.Response, next:any) {
+export var getList = function (req:express.Request, res:express.Response, next:Function) {
   var limit = req.query.limit || 10;
   var offset = req.query.offset || 0;
   var query = {

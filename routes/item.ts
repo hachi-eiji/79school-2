@@ -15,7 +15,7 @@ var service = require('../libs/service');
  * @param next
  * @public
  */
-export var show = function (req:express.Request, res:express.Response, next:any) {
+export var show = function (req:express.Request, res:express.Response, next:Function) {
   service.item.getItem(req.params.id, function (err:Error, item:ItemDocument) {
     if (err) {
       return next(err);
@@ -36,7 +36,7 @@ export var show = function (req:express.Request, res:express.Response, next:any)
  * @param res
  * @param next
  */
-export var showCreate = function (req:express.Request, res:express.Response, next:any) {
+export var showCreate = function (req:express.Request, res:express.Response, next:Function) {
   res.render('item/new');
 };
 
@@ -48,7 +48,7 @@ export var showCreate = function (req:express.Request, res:express.Response, nex
  * @param res
  * @param next
  */
-export var register = function (req:express.Request, res:express.Response, next:any) {
+export var register = function (req:express.Request, res:express.Response, next:Function) {
   var body = req.body;
   service.item.create((<session.ApplicationSession>req.session).user, body.title, body.body, body.tags, function (err:Error) {
     if (err) {
@@ -64,7 +64,7 @@ export var register = function (req:express.Request, res:express.Response, next:
  * @param res
  * @param next
  */
-export var showEdit = function (req:express.Request, res:express.Response, next:any) {
+export var showEdit = function (req:express.Request, res:express.Response, next:Function) {
   service.item.getItem(req.params.id, function (err:Error, item:ItemDocument) {
     if (err) {
       return next(err);
@@ -82,7 +82,7 @@ export var showEdit = function (req:express.Request, res:express.Response, next:
  * @param res
  * @param next
  */
-export var update = function (req:express.Request, res:express.Response, next:any) {
+export var update = function (req:express.Request, res:express.Response, next:Function) {
   var id = req.params.id;
   var body = req.body;
 
@@ -98,7 +98,7 @@ export var update = function (req:express.Request, res:express.Response, next:an
 /**
  * 記事削除.
  */
-export var remove = function (req:express.Request, res:express.Response, next:any) {
+export var remove = function (req:express.Request, res:express.Response, next:Function) {
   var id = req.params.id;
   service.item.remove(id, function (err:Error) {
     if (err) {
@@ -114,7 +114,7 @@ export var remove = function (req:express.Request, res:express.Response, next:an
  * @param res
  * @param next
  */
-export var like = function (req:express.Request, res:express.Response, next:any) {
+export var like = function (req:express.Request, res:express.Response, next:Function) {
   var userId = (<session.ApplicationSession>req.session).user.id;
   var itemId = req.params.id;
   service.item.like(userId, itemId, function (err:Error) {

@@ -8,7 +8,7 @@ export var user = require('./user');
 export var reply = require('./reply');
 var service = require('../libs/service');
 
-export var index = function (req:express.Request, res:express.Response, next:any) {
+export var index = function (req:express.Request, res:express.Response, next:Function) {
   service.item.getTimeLine(1, function (err:Error, timeLine:ItemDocument[]) {
     if (err) {
       return next(err);
