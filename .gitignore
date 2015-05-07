@@ -6,6 +6,7 @@ tests/models/*.js
 libs/**/*.js
 routes/**/*.js
 models/*.js
+app.js
 
 ### Node ###
 # Logs
