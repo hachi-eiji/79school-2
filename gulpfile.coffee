@@ -29,6 +29,8 @@ gulp.task 'clean:typescript', ->
     './libs/**/*.js.map',
     './routes/**/*.js',
     './routes/**/*.js.map'
+    './test/**/*.js',
+    './test/**/*.js.map'
   ], {base: './'})
   .pipe(debug({title: 'delete file'}))
   .pipe(vinylPaths(del));
