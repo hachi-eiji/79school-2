@@ -1,7 +1,4 @@
-///<reference path="../../typings/mocha/mocha.d.ts"/>
-///<reference path="../../typings/expect.js/expect.js.d.ts"/>
-///<reference path="../../typings/mongoose/mongoose.d.ts"/>
-///<reference path="../../typings/async/async.d.ts"/>
+///<reference path="../test.default.d.ts"/>
 
 import expect = require('expect.js');
 import async = require('async');

@@ -1,6 +1,4 @@
-///<reference path="../../typings/mocha/mocha.d.ts"/>
-///<reference path="../../typings/expect.js/expect.js.d.ts"/>
-///<reference path="../../typings/nock/nock.d.ts"/>
+///<reference path="../test.default.d.ts"/>
 
 import nock = require('nock');
 import expect = require('expect.js');

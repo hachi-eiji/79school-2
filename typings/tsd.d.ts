@@ -14,3 +14,4 @@
 /// <reference path="nock/nock.d.ts" />
 /// <reference path="mocha/mocha.d.ts" />
 /// <reference path="marked/marked.d.ts" />
+/// <reference path="superagent/superagent.d.ts" />

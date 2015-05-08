@@ -1,8 +1,7 @@
-/* global describe, it, before, after, afterEach */
-'use strict';
+///<reference path="../../test.default.d.ts"/>
 
 var LoginFactory = require('../../../libs/service/login');
-var nock = require('nock');
+import nock = require('nock');
 
 describe('service/login', function () {
   describe('login', function () {
@@ -35,7 +34,7 @@ describe('service/login', function () {
           method: 'POST'
         }
       };
-      LoginFactory.create(LoginFactory.Type.GitHub, config).login('test', function (err, user) {
+      LoginFactory.create(LoginFactory.Type.GitHub, config).login('test', function (err:Error, user:any) {
         if (err) {
           return done(err);
         }
@@ -44,3 +43,4 @@ describe('service/login', function () {
     });
   });
 });
+

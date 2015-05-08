@@ -2,7 +2,7 @@
 
 ### TypeScript ###
 *.js.map
-tests/models/*.js
+tests/**/*.js
 libs/**/*.js
 routes/**/*.js
 models/*.js
