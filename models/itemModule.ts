@@ -28,5 +28,4 @@ module model.item {
     limit?: number;
   }
 }
-
 export = model;
