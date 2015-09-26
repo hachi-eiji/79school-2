@@ -25,7 +25,7 @@ describe('item', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function (res) {
+            .end(function (err, res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
@@ -40,7 +40,7 @@ describe('item', function () {
             .post('http://localhost:' + port + '/items/create')
             .send(data)
             .set('Cookie', cookie)
-            .end(function (res) {
+            .end(function (err, res) {
               nextTask(null, res);
             });
         },
@@ -102,7 +102,7 @@ describe('item', function () {
         function (user, nextTask) {
           superagent
             .get('http://localhost:' + port + '/items/1')
-            .end(function (res) {
+            .end(function (err, res) {
               nextTask(null, user, res);
             });
         }
@@ -126,7 +126,7 @@ describe('item', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function (res) {
+            .end(function (err, res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
@@ -163,7 +163,7 @@ describe('item', function () {
             .post('http://localhost:' + port + '/items/1/edit')
             .send(updated)
             .set('Cookie', cookie)
-            .end(function (res) {
+            .end(function (err, res) {
               nextTask(null, res);
             });
         },
@@ -197,7 +197,7 @@ describe('item', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function (res) {
+            .end(function (err, res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
@@ -222,7 +222,7 @@ describe('item', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function (res) {
+            .end(function (err, res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
@@ -278,7 +278,7 @@ describe('item', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function (res) {
+            .end(function (err, res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });

@@ -28,7 +28,7 @@ describe('reply', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function (res) {
+            .end(function (err, res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
@@ -63,7 +63,7 @@ describe('reply', function () {
             .post('http://localhost:' + port + '/items/reply')
             .send(data)
             .set('Cookie', cookie)
-            .end(function (res) {
+            .end(function (err, res) {
               nextTask(null, res);
             });
         },
@@ -92,7 +92,7 @@ describe('reply', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/debug/login')
-            .end(function (res) {
+            .end(function (err, res) {
               cookie = res.headers['set-cookie'][0];
               nextTask();
             });
@@ -127,7 +127,7 @@ describe('reply', function () {
         function (nextTask) {
           superagent
             .get('http://localhost:' + port + '/items/reply/list?itemId=item-id')
-            .end(function (res) {
+            .end(function (err, res) {
               nextTask(null, res);
             });
         }
