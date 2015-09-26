@@ -23,7 +23,7 @@ describe('service/login', function () {
       done();
     });
     it('test', function (done) {
-      var config = {
+      const config = {
         host: 'localhost',
         port: 3001,
         client_id: 'test_client_id',
@@ -33,7 +33,7 @@ describe('service/login', function () {
           port: 3001
         }
       };
-      LoginFactory.create(LoginFactory.Type.GitHub, config).login('test', function (err, user) {
+      LoginFactory.create(LoginFactory.Type.GitHub, config).login('test', (err, user) => {
         if (err) {
           return done(err);
         }
