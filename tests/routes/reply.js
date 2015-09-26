@@ -1,12 +1,14 @@
 /* global describe, it, before, after, afterEach */
 'use strict';
-var async = require('async');
+var co = require('co');
 var expect = require('expect.js');
 var superagent = require('superagent');
 var app = require('../../app');
 var port = app.port;
 var startup = app.startup;
 var shutdown = app.shutdown;
+
+var superAgentPromise = require('../util').superAgentPromise;
 
 var model = require('../../models/index');
 var Item = model.Item;
@@ -20,125 +22,71 @@ describe('reply', function () {
   });
 
   describe('register', function () {
-    var cookie;
-    var user;
+    let cookie;
+    let user;
     it('should create reply data', function (done) {
-      async.waterfall([
-        // ダミーログイン
-        function (nextTask) {
-          superagent
-            .get('http://localhost:' + port + '/debug/login')
-            .end(function (err, res) {
-              cookie = res.headers['set-cookie'][0];
-              nextTask();
-            });
-        },
-        // get user object
-        function (nextTask) {
-          User.findOne({id: 1}, function (err, _user) {
-            user = _user;
-            nextTask();
-          });
-        },
-        // create replied item
-        function (nextTask) {
-          Item.create({
-            id: 'foo',
-            ownerId: user.id,
-            owner: user._id,
-            title: 'title',
-            body: 'body',
-            tags: ['a', 'b'],
-            searchTags: ['a', 'b']
-          }, function () {
-            nextTask();
-          });
-        },
-        function (nextTask) {
-          var data = {
-            body: 'reply body',
-            itemId: 'foo'
-          };
-          superagent
-            .post('http://localhost:' + port + '/items/reply')
-            .send(data)
-            .set('Cookie', cookie)
-            .end(function (err, res) {
-              nextTask(null, res);
-            });
-        },
-        function (res, nextTask) {
-          expect(res.statusCode).to.equal(200);
-          Reply.find({itemId: 'foo'}, function (err, replies) {
-            nextTask(err, replies);
-          });
-        }
-      ], function (err, replies) {
+      co(function* () {
+        let res = yield superAgentPromise('/debug/login');
+        cookie = res.headers['set-cookie'][0];
+        user = yield User.findOne({ id: 1 }).exec();
+        yield Item.create({
+          id: 'foo',
+          ownerId: user.id,
+          owner: user._id,
+          title: 'title',
+          body: 'body',
+          tags: ['a', 'b'],
+          searchTags: ['a', 'b']
+        });
+        const data = {
+          body: 'reply body',
+          itemId: 'foo'
+        };
+        res = yield superAgentPromise('/items/reply', 'POST', data, new Map([['Cookie', cookie]]));
+        expect(res.statusCode).to.equal(200);
+        return yield Reply.find({ itemId: 'foo' }).exec();
+      }).then(replies => {
         var reply = replies[0];
         expect(reply.itemId).to.equal('foo');
         expect(reply.ownerId).to.equal(user.id);
         expect(reply.body).to.equal('reply body');
         done();
-      });
+      }).catch(err => done(err));
     });
   });
 
   describe('getList', function () {
     it('should get item list', function (done) {
-      var cookie;
-      var user;
-      async.waterfall([
-        // ダミーログイン
-        function (nextTask) {
-          superagent
-            .get('http://localhost:' + port + '/debug/login')
-            .end(function (err, res) {
-              cookie = res.headers['set-cookie'][0];
-              nextTask();
-            });
-        },
-        // get user object
-        function (nextTask) {
-          User.findOne({id: 1}, function (err, _user) {
-            user = _user;
-            nextTask();
-          });
-        },
+      let cookie;
+      let user;
+      co(function* () {
+        let res = yield superAgentPromise('/debug/login');
+        cookie = res.headers['set-cookie'][0];
+        user = yield User.findOne({ id: 1 }).exec();
         // create Reply document
-        function (nextTask) {
-          var data = [];
-          for (var i = 0; i < 10; i++) {
-            var time = new Date(2014, i, 1).getTime();
-            data.push({
-              id: 'foo-' + i,
-              itemId: 'item-id',
-              ownerId: user.id,
-              owner: user._id,
-              body: 'item body - ' + i,
-              createAt: time,
-              updateAt: time
-            });
-          }
-          Reply.create(data, function () {
-            nextTask();
+        let data = [];
+        for (var i = 0; i < 10; i++) {
+          let time = new Date(2014, i, 1).getTime();
+          data.push({
+            id: 'foo-' + i,
+            itemId: 'item-id',
+            ownerId: user.id,
+            owner: user._id,
+            body: 'item body - ' + i,
+            createAt: time,
+            updateAt: time
           });
-        },
-        // test
-        function (nextTask) {
-          superagent
-            .get('http://localhost:' + port + '/items/reply/list?itemId=item-id')
-            .end(function (err, res) {
-              nextTask(null, res);
-            });
         }
-      ], function (err, res) {
+        yield Reply.create(data);
+        return yield superAgentPromise('/items/reply/list?itemId=item-id');
+      }).then(res => {
         expect(res.body).to.have.length(10);
         for (var i = 0; i < res.body.length; i++) {
           var reply = res.body[i];
-          expect(reply.body).to.equal('<p>item body - ' + Number(res.body.length - (i + 1)) + '</p>\n');
+          expect(reply.body).to.equal(`<p>item body - ${Number(res.body.length - (i + 1))}</p>\n`);
         }
         done();
-      });
+      }).catch(err => done(err));
     });
   });
 

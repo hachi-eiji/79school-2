@@ -70,7 +70,7 @@ schema.statics.search = function (condition, callback) {
 };
 
 schema.statics.findItem = function (id, callback) {
-  this.findOne({id: id}).populate('owner').exec(callback);
+  return this.findOne({ id: id }).populate('owner').exec(callback);
 };
 
 /**
