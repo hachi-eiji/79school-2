@@ -1,12 +1,12 @@
 'use strict';
-var _ = require('lodash');
-var async = require('async');
-var crypto = require('crypto');
-var dateformat = require('dateformat');
-var Item = require('../../models').Item;
-var Reply = require('../../models').Reply;
+const _ = require('lodash');
+const async = require('async');
+const crypto = require('crypto');
+const dateformat = require('dateformat');
+const Item = require('../../models').Item;
+const Reply = require('../../models').Reply;
 
-var LIMIT_PER_PAGE = 50;
+const LIMIT_PER_PAGE = 50;
 
 module.exports = {
   /**
@@ -16,28 +16,28 @@ module.exports = {
    */
   getTimeLine: function(page, callback) {
     page = !page || page <= 0 ? 1 : page;
-    var limit = LIMIT_PER_PAGE;
-    var offset = (page - 1) * limit;
+    const limit = LIMIT_PER_PAGE;
+    const offset = (page - 1) * limit;
     Item.getTimeLine({}, {
-      updateAt: 'desc'
-    }, offset, limit, function(err, items) {
+      updateAt: 'desc',
+    }, offset, limit, (err, items) => {
       if (err) {
-        callback(err);
+        return callback(err);
       }
-      var timeLine = [];
-      _.forEach(items, function(item) {
+      const timeLine = [];
+      _.forEach(items, (item) => {
         timeLine.push({
           id: item.id,
           owner: {
             id: item.ownerId,
             loginId: item.owner.loginId,
-            avatarUrl: item.owner.avatarUrl
+            avatarUrl: item.owner.avatarUrl,
           },
           title: item.title,
           body: item.body,
           likeCount: item.likes.length,
           tags: item.tags,
-          createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd')
+          createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd'),
         });
       });
       callback(null, timeLine);
@@ -49,14 +49,14 @@ module.exports = {
    * @param {string} id - item id
    */
   getItem: function(id, callback) {
-    Item.findItem(id, function(err, item) {
+    Item.findItem(id, (err, item) => {
       if (err) {
         return callback(err);
       }
       if (!item) {
         return callback();
       }
-      var data = {
+      const data = {
         id: item.id,
         owner: item.owner,
         ownerId: item.ownerId,
@@ -64,9 +64,9 @@ module.exports = {
         body: item.body,
         tags: item.tags,
         createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd'),
-        updateAt: dateformat(new Date(item.updateAt), 'yyyy/mm/dd')
+        updateAt: dateformat(new Date(item.updateAt), 'yyyy/mm/dd'),
       };
-      return callback(null, data);
+      callback(null, data);
     });
   },
 
@@ -76,13 +76,13 @@ module.exports = {
    */
   remove: function(id, callback) {
     Item.remove({
-      id: id
-    }, function(err) {
+      id: id,
+    }, (err) => {
       if (err) {
         return callback(err);
       }
       Reply.remove({
-        itemId: id
+        itemId: id,
       }, callback);
     });
   },
@@ -102,22 +102,22 @@ module.exports = {
             return nextTask(err);
           }
           if (!item) {
-            var e = new Error('item not found');
-            e.status = 404;
-            return nextTask(e);
+            const _err = new Error('item not found');
+            _err.status = 404;
+            return nextTask(_err);
           }
           nextTask();
         });
       },
       function(nextTask) {
         Item.update({
-          id: id
+          id: id,
         }, {
-          "$push": {
-            likes: userId
-          }
+          '$push': {
+            likes: userId,
+          },
         }, nextTask);
-      }
+      },
     ], callback);
   },
 
@@ -131,43 +131,43 @@ module.exports = {
    */
   create: function(user, title, body, tags, callback) {
     tags = tags || [];
-    var userId = user.id;
-    var time = Date.now();
+    const userId = user.id;
+    const time = Date.now();
 
-    var md5 = crypto.createHash('md5');
+    const md5 = crypto.createHash('md5');
     md5.update(String(userId) + String(time), 'utf8');
-    var id = md5.digest('hex');
+    const id = md5.digest('hex');
 
-    var searchTags = [];
-    for (var i = 0; i < tags.length; i++) {
+    const searchTags = [];
+    for (let i = 0; i < tags.length; i++) {
       searchTags.push(tags[i].toLowerCase());
     }
-    var item = {
+    const item = {
       id: id,
       ownerId: userId,
       owner: user._id,
-      title: title,
-      body: body,
-      tags: tags,
-      searchTags: searchTags
+      title,
+      body,
+      tags,
+      searchTags: searchTags,
     };
     Item.create(item, callback);
   },
   update: function(id, title, body, tags, callback) {
     tags = tags || [];
-    var searchTags = [];
-    for (var i = 0; i < tags.length; i++) {
+    const searchTags = [];
+    for (let i = 0; i < tags.length; i++) {
       searchTags.push(tags[i].toLowerCase());
     }
-    var data = {
+    const data = {
       title: title,
       body: body,
       tags: tags,
       searchTags: searchTags,
-      updateAt: Date.now()
+      updateAt: Date.now(),
     };
     Item.update({
-      id: id
+      id: id,
     }, data, callback);
-  }
+  },
 };

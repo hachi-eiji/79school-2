@@ -1,48 +1,48 @@
 'use strict';
-var mongoose = require('mongoose');
-var async = require('async');
+const mongoose = require('mongoose');
+const async = require('async');
 
-var schema = new mongoose.Schema({
+const schema = new mongoose.Schema({
   id: {
     type: String,
     require: true,
     index: {
-      unique: true
-    }
+      unique: true,
+    },
   },
   ownerId: {
     type: Number,
     required: true,
-    index: true
+    index: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   title: {
     type: String,
-    require: true
+    require: true,
   },
   body: {
     type: String,
-    required: true
+    required: true,
   },
   likes: [{type: Number, default: []}],
   published: {
     type: Boolean,
-    default: false
+    default: false,
   },
   tags: [String],
   searchTags: [String],
   createAt: {
     type: Number,
-    default: Date.now
+    default: Date.now,
   },
   updateAt: {
     type: Number,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 /**
@@ -56,7 +56,7 @@ var schema = new mongoose.Schema({
  */
 schema.statics.search = function (condition, callback) {
   condition = condition || {};
-  var query = this.find(condition.query || {}).populate('owner');
+  let query = this.find(condition.query || {}).populate('owner');
   if (condition.sort) {
     query = query.sort(condition.sort);
   }
@@ -82,19 +82,19 @@ schema.statics.findItem = function (id, callback) {
  * @param {Function} callback - callback function
  */
 schema.statics.getTimeLine = function (query, sort, offset, limit, callback) {
-  var self = this;
+  const self = this;
   async.waterfall([
     function (next) {
-      var condition = {
+      const condition = {
         offset: offset || 0,
         limit: limit || 50,
         query: query || {},
-        sort: sort || {updateAt: 'desc'}
+        sort: sort || {updateAt: 'desc'},
       };
       self.search(condition, function (err, items) {
         next(err, items);
       });
-    }
+    },
   ], callback);
 };
 

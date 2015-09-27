@@ -2,21 +2,21 @@
  * @module routes/user
  */
 'use strict';
-var User = require('../models').User;
-var LoginFactory = require('../libs/service/login');
-var config = require('../libs/config');
+const User = require('../models').User;
+const LoginFactory = require('../libs/service/login');
+const config = require('../libs/config');
 
-exports.logout = function (req, res, next) {
+exports.logout = function (req, res) {
   req.session.destroy();
   res.redirect('/');
 };
 
 exports.gitHubAuthCallback = function (req, res, next) {
-  var referer = req.headers['referer'] || '/';
+  const referer = req.headers.referer || '/';
   if (req.session && req.session.user) {
     res.redirect(referer);
   }
-  LoginFactory.create(LoginFactory.Type.GitHub, config.gitHubAuth).login(req.query.code, function (err, user) {
+  LoginFactory.create(LoginFactory.Type.GitHub, config.gitHubAuth).login(req.query.code, (err, user) => {
     if (err) {
       return next(err);
     }
@@ -27,11 +27,11 @@ exports.gitHubAuthCallback = function (req, res, next) {
 
 // 多分本当はわけたほうがいいよね.
 exports.debugLogin = function (req, res, next) {
-  User.findOne({id: 1}, function (err, user) {
+  User.findOne({ id: 1 }, (err, user) => {
     if (err) {
       return next(err);
     }
-    if(user) {
+    if (user) {
       req.session.user = user;
       res.status(200).end();
     } else {
@@ -39,12 +39,12 @@ exports.debugLogin = function (req, res, next) {
         id: 1,
         loginId: 'hachi_eiji',
         avatarUrl: 'https://avatars.githubusercontent.com/u/995846?v=3',
-        name: 'test'
-      }, function (err, user) {
-        if (err) {
-          return next(err);
+        name: 'test',
+      }, (_err, _user) => {
+        if (_err) {
+          return next(_err);
         }
-        req.session.user = user;
+        req.session.user = _user;
         res.status(200).end();
       });
     }

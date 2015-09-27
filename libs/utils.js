@@ -2,8 +2,8 @@
  * @module libs/utils
  */
 'use strict';
-var marked = require('marked');
-var crypto = require('crypto');
+const marked = require('marked');
+const crypto = require('crypto');
 
 /**
  * convert from markdown to html
@@ -13,7 +13,7 @@ var crypto = require('crypto');
 exports.markdownToHTML = function (str) {
   marked.setOptions({
     gfm: true,
-    breaks: true
+    breaks: true,
   });
   return marked(str);
 };
@@ -21,16 +21,15 @@ exports.markdownToHTML = function (str) {
 
 /**
  * to md5 from argument values
- * @param {...String} val - to MD5 values
  * @return {String} MD5
  */
-exports.toMd5 = function (val) {
+exports.toMd5 = function () {
   if (arguments.length === 0) {
     return '';
   }
-  var str = '';
-  var md5 = crypto.createHash('md5');
-  for (var i = 0; i < arguments.length; i++) {
+  let str = '';
+  const md5 = crypto.createHash('md5');
+  for (let i = 0; i < arguments.length; i++) {
     str += String(arguments[i]);
   }
   md5.update(str, 'utf8');

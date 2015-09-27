@@ -4,30 +4,10 @@
  *
  */
 'use strict';
-var async = require('async');
-var GitHubApi = require('../gitHubApi');
-var User = require('../../models').User;
+const async = require('async');
+const GitHubApi = require('../gitHubApi');
+const User = require('../../models').User;
 
-module.exports = LoginFactory;
-
-function LoginFactory() {
-}
-
-LoginFactory.Type = {
-  GitHub: 0,
-  Twitter: 1
-};
-
-/**
- * create factory
- * @param {LoginFactory.Type} type
- */
-LoginFactory.create = function (type, config) {
-  if (type === LoginFactory.Type.GitHub) {
-    return new GitHubLogin(config);
-  }
-  throw new Error('illegal argument error. type is ' + type);
-};
 
 /**
  * GitHub Login
@@ -42,11 +22,11 @@ function GitHubLogin(config) {
  * @param {function} callback
  */
 GitHubLogin.prototype.login = function (code, callback) {
-  var gitHubApi = new GitHubApi(this.config);
+  const gitHubApi = new GitHubApi(this.config);
   async.waterfall([
 
     function (next) {
-      gitHubApi.getUser(code, function (err, gitHubUser) {
+      gitHubApi.getUser(code, (err, gitHubUser) => {
         if (err) return next(err);
         if (!gitHubUser) return callback(new Error('can not get user'));
 
@@ -55,7 +35,7 @@ GitHubLogin.prototype.login = function (code, callback) {
     },
     function (gitHubUser, next) {
       User.findOne({
-        id: gitHubUser.id
+        id: gitHubUser.id,
       }, function (err, user) {
         if (err) return next(err);
         return next(null, gitHubUser, user);
@@ -70,8 +50,29 @@ GitHubLogin.prototype.login = function (code, callback) {
         loginId: gitHubUser.login + '@github',
         accountType: 'github',
         name: gitHubUser.name,
-        avatarUrl: gitHubUser.avatar_url
+        avatarUrl: gitHubUser.avatar_url,
       }, next);
-    }
+    },
   ], callback);
 };
+
+function LoginFactory() {
+}
+
+LoginFactory.Type = {
+  GitHub: 0,
+  Twitter: 1,
+};
+
+/**
+ * create factory
+ * @param {LoginFactory.Type} type
+ */
+LoginFactory.create = function (type, config) {
+  if (type === LoginFactory.Type.GitHub) {
+    return new GitHubLogin(config);
+  }
+  throw new Error('illegal argument error. type is ' + type);
+};
+
+module.exports = LoginFactory;

@@ -1,32 +1,32 @@
 'use strict';
-var mongoose = require('mongoose');
-var schema = new mongoose.Schema({
+const mongoose = require('mongoose');
+const schema = new mongoose.Schema({
   id: {
     type: String,
-    required: true
+    required: true,
   },
   itemId: {
     type: String,
     required: true,
-    index: true
+    index: true,
   },
   ownerId: {
     type: Number,
-    required: true
+    required: true,
   },
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true
+    required: true,
   },
   body: {
     type: String,
-    required: true
+    required: true,
   },
   createAt: {
     type: Number,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 
 schema.statics.list = function (limit, offset, query, callback) {

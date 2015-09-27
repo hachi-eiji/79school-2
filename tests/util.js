@@ -1,35 +1,35 @@
 'use strict';
 
-var superagent = require('superagent');
-var app = require('../app');
-var port = app.port;
+const superagent = require('superagent');
+const app = require('../app');
+const port = app.port;
 
 exports.superAgentPromise = function (path, method, data, headers) {
   method = method || 'GET';
   data = data || null;
   headers = headers || new Map();
   return new Promise((resolve, reject) => {
-    let s;
+    let agent;
     switch (method) {
       case 'GET':
-        s = superagent.get(`http://localhost:${port}${path}`);
+        agent = superagent.get(`http://localhost:${port}${path}`);
         break;
       case 'POST':
-        s = superagent.post(`http://localhost:${port}${path}`);
+        agent = superagent.post(`http://localhost:${port}${path}`);
         break;
       default :
-        s = superagent.get(`http://localhost:${port}${path}`);
+        agent = superagent.get(`http://localhost:${port}${path}`);
         break;
     }
     if (data) {
-      s = s.send(data);
+      agent = agent.send(data);
     }
-    let itr = headers.entries();
-    let v;
-    while ((v = itr.next().value)) {
-      s = s.set(v[0], v[1]);
+    const itr = headers.entries();
+    let val;
+    while ((val = itr.next().value)) {
+      agent = agent.set(val[0], val[1]);
     }
-    s.end((err, res) => {
+    agent.end((err, res) => {
       if (err) {
         return reject(err);
       }

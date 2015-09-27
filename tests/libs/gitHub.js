@@ -1,8 +1,8 @@
 /* global describe, it, before */
 'use strict';
-var assert = require('power-assert');
-var nock = require('nock');
-var GitHubApi = require('../../libs/gitHubApi');
+const assert = require('power-assert');
+const nock = require('nock');
+const GitHubApi = require('../../libs/gitHubApi');
 
 describe('libs/GitHubApi', () => {
   const config = {
@@ -11,12 +11,11 @@ describe('libs/GitHubApi', () => {
     auth: {
       host: 'localhost',
       port: 3001,
-      path: '/auth'
-    }
+      path: '/auth',
+    },
   };
   before(function (done) {
     nock(`https://${config.auth.host}:${config.auth.port}`)
-      .log(console.log)
       .post(config.auth.path, 'client_id=dummy_id&client_secret=dummy_secret&code=valid_code')
       .reply(200, { access_token: 'valid_token' })
       .post(config.auth.path, 'client_id=dummy_id&client_secret=dummy_secret&code=invalid_code')
@@ -24,7 +23,7 @@ describe('libs/GitHubApi', () => {
     done();
   });
 
-  let tester = new GitHubApi(config);
+  const tester = new GitHubApi(config);
   describe('_getAccessToken', function() {
     it('should get access token', function(done) {
       tester._getAccessToken('valid_code', (err, token) => {

@@ -2,10 +2,9 @@
  * @file GitHub API
  */
 'use strict';
-var https = require('https');
-var querystring = require('querystring');
+const https = require('https');
+const querystring = require('querystring');
 
-module.exports = GitHubApi;
 
 function GitHubApi(config) {
   this.config = config || {};
@@ -17,18 +16,19 @@ function GitHubApi(config) {
   this.config.auth.port = this.config.auth.port || 443;
 }
 
+module.exports = GitHubApi;
+
 /**
  * get user via GitHub API.
  * @param {string} code - code
  * @param {Function} callback - callback method
  */
 GitHubApi.prototype.getUser = function (code, callback) {
-  var self = this;
-  self._getAccessToken(code, function (err, accessToken) {
+  this._getAccessToken(code, (err, accessToken) => {
     if (err) {
       return callback(err);
     }
-    return self._getUser(accessToken, callback);
+    return this._getUser(accessToken, callback);
   });
 };
 
@@ -40,39 +40,39 @@ GitHubApi.prototype.getUser = function (code, callback) {
  */
 GitHubApi.prototype._getAccessToken = function (code, callback) {
   if (!code) {
-    var error = new Error('code is undefined');
+    const error = new Error('code is undefined');
     return callback(error);
   }
 
-  var config = this.config;
-  var data = querystring.stringify({
+  const config = this.config;
+  const data = querystring.stringify({
     client_id: config.client_id,
     client_secret: config.secret,
-    code: code
+    code: code,
   });
 
-  var option = {
+  const option = {
     hostname: config.auth.host,
     port: config.auth.port,
     path: (config.auth && config.auth.path) || '/login/oauth/access_token',
     method: (config.auth && config.auth.method) || 'POST',
     headers: {
       'Content-Length': Buffer.byteLength(data),
-      'Accept': 'application/json'
-    }
+      'Accept': 'application/json',
+    },
   };
-  var req = https.request(option, function (res) {
+  const req = https.request(option, function (res) {
     res.setEncoding('utf-8');
     if (res.statusCode >= 400) {
       return callback(new Error('status code is ' + res.statusCode));
     }
-    var responseData = '';
+    let responseData = '';
     res.on('data', function (chunk) {
       responseData += chunk;
     });
     res.on('end', function () {
       try {
-        var json = JSON.parse(responseData);
+        const json = JSON.parse(responseData);
         if (json.error) {
           return callback(new Error(json.error));
         }
@@ -80,7 +80,6 @@ GitHubApi.prototype._getAccessToken = function (code, callback) {
       } catch (e) {
         return callback(new Error('json parse error. ' + responseData));
       }
-
     });
   });
   req.on('error', function (err) {
@@ -96,8 +95,8 @@ GitHubApi.prototype._getAccessToken = function (code, callback) {
  * @param {Function} callback - callback
  */
 GitHubApi.prototype._getUser = function (accessToken, callback) {
-  var config = this.config;
-  var req = https.request({
+  const config = this.config;
+  const req = https.request({
     hostname: config.host,
     port: config.port,
     path: (config.user && config.user.path) || '/user',
@@ -105,17 +104,17 @@ GitHubApi.prototype._getUser = function (accessToken, callback) {
     headers: {
       'Accept': 'application/json',
       'Authorization': 'token ' + accessToken,
-      'User-Agent': 'test'
-    }
+      'User-Agent': 'test',
+    },
   }, function (res) {
     res.setEncoding('utf-8');
-    var statusCode = res.statusCode;
-    var userData = '';
+    const statusCode = res.statusCode;
+    let userData = '';
     res.on('data', function (chunk) {
       userData += chunk;
     });
     res.on('end', function () {
-      var json = JSON.parse(userData);
+      const json = JSON.parse(userData);
       if (statusCode >= 400) {
         return callback(new Error(json.message));
       }

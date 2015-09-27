@@ -2,8 +2,8 @@
  * @module routes/item
  */
 'use strict';
-var utils = require('../libs').utils;
-var service = require('../libs/service');
+const utils = require('../libs').utils;
+const service = require('../libs/service');
 
 /**
  * アイテムを表示する.
@@ -13,7 +13,7 @@ var service = require('../libs/service');
  * @public
  */
 exports.show = function(req, res, next) {
-  service.item.getItem(req.params.id, function(err, item) {
+  service.item.getItem(req.params.id, (err, item) => {
     if (err) {
       return next(err);
     }
@@ -22,7 +22,7 @@ exports.show = function(req, res, next) {
     }
     item.body = utils.markdownToHTML(item.body);
     res.render('item/show', {
-      item: item
+      item: item,
     });
   });
 };
@@ -34,7 +34,7 @@ exports.show = function(req, res, next) {
  * @param res
  * @param next
  */
-exports.showCreate = function(req, res, next) {
+exports.showCreate = function (req, res) {
   res.render('item/new');
 };
 
@@ -47,8 +47,8 @@ exports.showCreate = function(req, res, next) {
  * @param next
  */
 exports.register = function(req, res, next) {
-  var body = req.body;
-  service.item.create(req.session.user, body.title, body.body, body.tags, function(err){
+  const body = req.body;
+  service.item.create(req.session.user, body.title, body.body, body.tags, (err) => {
     if (err) {
       return next(err);
     }
@@ -63,12 +63,12 @@ exports.register = function(req, res, next) {
  * @param next
  */
 exports.showEdit = function(req, res, next) {
-  service.item.getItem(req.params.id, function(err, item) {
+  service.item.getItem(req.params.id, (err, item) => {
     if (err) {
       return next(err);
     }
     res.render('item/edit', {
-      item: item
+      item: item,
     });
   });
 };
@@ -81,10 +81,10 @@ exports.showEdit = function(req, res, next) {
  * @param next
  */
 exports.update = function(req, res, next) {
-  var id = req.params.id;
-  var body = req.body;
+  const id = req.params.id;
+  const body = req.body;
 
-  service.item.update(id, body.title, body.body, body.tags, function(err){
+  service.item.update(id, body.title, body.body, body.tags, (err) => {
     if (err) {
       return next(err);
     }
@@ -97,8 +97,8 @@ exports.update = function(req, res, next) {
  * 記事削除.
  */
 exports.remove = function(req, res, next) {
-  var id = req.params.id;
-  service.item.remove(id, function(err) {
+  const id = req.params.id;
+  service.item.remove(id, (err) => {
     if (err) {
       return next(err);
     }
@@ -113,10 +113,11 @@ exports.remove = function(req, res, next) {
  * @param next
  */
 exports.like = function(req, res, next) {
-  var userId = req.session.user.id;
-  var itemId = req.params.id;
-  service.item.like(userId, itemId, function(err){
-    if(err){
+  const userId = req.session.user.id;
+  const itemId = req.params.id;
+
+  service.item.like(userId, itemId, (err) => {
+    if (err) {
       return next(err);
     }
     res.status(200).end();

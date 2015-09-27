@@ -1,37 +1,37 @@
 'use strict';
 
-var mongoose = require('mongoose');
-var schema = new mongoose.Schema({
+const mongoose = require('mongoose');
+const schema = new mongoose.Schema({
   id: {
     type: Number,
     required: true,
     index: {
-      unique: true
-    }
+      unique: true,
+    },
   },
-  loginId:{
+  loginId: {
     type: String,
     required: true,
     index: {
-      unique: true
-    }
+      unique: true,
+    },
   },
   accountType: {
     type: String,
-    enum: 'github twitter'.split(' ')
+    enum: 'github twitter'.split(' '),
   },
   name: {
     type: String,
-    required: true
+    required: true,
   },
-  avatarUrl : String,
+  avatarUrl: String,
   createAt: {
     type: Number,
-    default: Date.now
+    default: Date.now,
   },
   updateAt: {
     type: Number,
-    default: Date.now
-  }
+    default: Date.now,
+  },
 });
 module.exports = mongoose.model('User', schema);

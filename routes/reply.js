@@ -2,25 +2,25 @@
  * @module routes/reply
  */
 'use strict';
-var utils = require('../libs').utils;
-var markdownToHTML = utils.markdownToHTML;
-var Reply = require('../models').Reply;
+const utils = require('../libs').utils;
+const markdownToHTML = utils.markdownToHTML;
+const Reply = require('../models').Reply;
 
 exports.register = function (req, res, next) {
-  var body = req.body;
-  var itemId = body.itemId;
-  var time = Date.now();
-  var user = req.session.user;
+  const body = req.body;
+  const itemId = body.itemId;
+  const time = Date.now();
+  const user = req.session.user;
 
-  var id = utils.toMd5(itemId, time);
-  var data = {
+  const id = utils.toMd5(itemId, time);
+  const data = {
     id: id,
     itemId: itemId,
     ownerId: user.id,
     owner: user._id,
-    body: body.body
+    body: body.body,
   };
-  Reply.create(data, function (err, reply) {
+  Reply.create(data, (err) => {
     if (err) {
       return next(err);
     }
@@ -29,24 +29,24 @@ exports.register = function (req, res, next) {
 };
 
 exports.getList = function (req, res, next) {
-  var limit = req.query.limit || 10;
-  var offset = req.query.offset || 0;
-  var query = {
-    itemId: req.query.itemId
+  const limit = req.query.limit || 10;
+  const offset = req.query.offset || 0;
+  const query = {
+    itemId: req.query.itemId,
   };
-  Reply.list(limit, offset, query, function (err, replies) {
+  Reply.list(limit, offset, query, (err, replies) => {
     if (err) {
       return next(err);
     }
-    var data = [];
-    for (var i = 0; i < replies.length; i++) {
-      var reply = replies[i];
+    const data = [];
+    for (let i = 0; i < replies.length; i++) {
+      const reply = replies[i];
       data.push({
         creator: {
           loginId: reply.owner.loginId,
-          avatarUrl: reply.owner.avatarUrl
+          avatarUrl: reply.owner.avatarUrl,
         },
-        body: markdownToHTML(reply.body)
+        body: markdownToHTML(reply.body),
       });
     }
     res.send(data);
