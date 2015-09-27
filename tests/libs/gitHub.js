@@ -1,9 +1,8 @@
 /* global describe, it, before */
 'use strict';
-
+var assert = require('power-assert');
 var nock = require('nock');
 var GitHubApi = require('../../libs/gitHubApi');
-var expect = require('expect.js');
 
 describe('libs/GitHubApi', () => {
   const config = {
@@ -30,15 +29,15 @@ describe('libs/GitHubApi', () => {
     it('should get access token', function(done) {
       tester._getAccessToken('valid_code', (err, token) => {
         if (err) return done(err);
-        expect(token).to.eql('valid_token');
+        assert.equal(token, 'valid_token');
         done();
       });
     });
 
     it('should get error object', function (done) {
       tester._getAccessToken('invalid_code', (err, token) => {
-        expect(err).not.to.eql(null);
-        expect(token).to.eql(undefined);
+        assert.notEqual(err, null);
+        assert.equal(token, undefined);
         done();
       });
     });

@@ -1,10 +1,8 @@
 /* global describe, it, before, after, afterEach */
 'use strict';
+var assert = require('power-assert');
 var co = require('co');
-var expect = require('expect.js');
-var superagent = require('superagent');
 var app = require('../../app');
-var port = app.port;
 var startup = app.startup;
 var shutdown = app.shutdown;
 
@@ -43,13 +41,13 @@ describe('reply', function () {
           itemId: 'foo'
         };
         res = yield superAgentPromise('/items/reply', 'POST', data, new Map([['Cookie', cookie]]));
-        expect(res.statusCode).to.equal(200);
+        assert(res.statusCode, 200);
         return yield Reply.find({ itemId: 'foo' }).exec();
       }).then(replies => {
         var reply = replies[0];
-        expect(reply.itemId).to.equal('foo');
-        expect(reply.ownerId).to.equal(user.id);
-        expect(reply.body).to.equal('reply body');
+        assert.equal(reply.itemId, 'foo');
+        assert.equal(reply.ownerId, user.id);
+        assert.equal(reply.body, 'reply body');
         done();
       }).catch(err => done(err));
     });
@@ -80,10 +78,10 @@ describe('reply', function () {
         yield Reply.create(data);
         return yield superAgentPromise('/items/reply/list?itemId=item-id');
       }).then(res => {
-        expect(res.body).to.have.length(10);
+        assert.equal(res.body.length, 10);
         for (var i = 0; i < res.body.length; i++) {
           var reply = res.body[i];
-          expect(reply.body).to.equal(`<p>item body - ${Number(res.body.length - (i + 1))}</p>\n`);
+          assert.equal(reply.body, `<p>item body - ${Number(res.body.length - (i + 1))}</p>\n`);
         }
         done();
       }).catch(err => done(err));

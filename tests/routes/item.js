@@ -1,7 +1,7 @@
 /* global describe, it, before, after, afterEach */
 'use strict';
 var co = require('co');
-var expect = require('expect.js');
+var assert = require('power-assert');
 var app = require('../../app');
 var startup = app.startup;
 var shutdown = app.shutdown;
@@ -28,23 +28,23 @@ describe('item', function () {
           tags: ['Ab', 'b', 'テスト']
         };
         res = yield superAgentPromise('/items/create', 'POST', data, new Map([['Cookie', cookie]]));
-        expect(res.status).to.equal(200);
+        assert.equal(res.status, 200);
         // mongooseはpromiseを返却する query#execを参照.
         return yield Item.find({ ownerId: 1 }).populate('owner').exec();
       }).then(items => {
         // check registered item data
         var item = items[0];
-        expect(item.ownerId).to.equal(1);
-        expect(item.title).to.equal('title');
-        expect(item.body).to.equal('body');
-        expect(item.tags).to.have.length(3);
-        expect(item.tags).to.contain('Ab');
-        expect(item.tags).to.contain('b');
-        expect(item.tags).to.contain('テスト');
-        expect(item.searchTags).to.have.length(3);
-        expect(item.searchTags).to.contain('ab');
-        expect(item.searchTags).to.contain('b');
-        expect(item.searchTags).to.contain('テスト');
+        assert.equal(item.ownerId, 1);
+        assert.equal(item.title, 'title');
+        assert.equal(item.body, 'body');
+        assert.equal(item.tags.length, 3);
+        assert(item.tags.indexOf('Ab') !== -1);
+        assert(item.tags.indexOf('b') !== -1);
+        assert(item.tags.indexOf('テスト') !== -1);
+        assert.equal(item.searchTags.length, 3);
+        assert(item.searchTags.indexOf('ab') !== -1);
+        assert(item.searchTags.indexOf('b') !== -1);
+        assert(item.searchTags.indexOf('テスト') !== -1);
         done();
       }).catch(err => done(err));
     });
@@ -69,12 +69,13 @@ describe('item', function () {
         };
         yield Item.create(item);
         const res = yield superAgentPromise('/items/1');
-        expect(res.statusCode).to.equal(200);
+        assert.equal(res.statusCode, 200);
         var text = res.text;
-        expect(text).to.be.contain('test title');
-        expect(text).to.be.contain('<span class="label label-default">foo</span><span class="label label-default">bar</span>');
-        expect(text).to.be.contain(`${user.loginId}が2014/12/01に投稿`);
-        expect(text).to.be.contain('<div class="panel-body"><p>test body</p>\n</div>');
+
+        assert(text.indexOf('test title') !== -1);
+        assert(text.indexOf('<span class="label label-default">foo</span><span class="label label-default">bar</span>') !== -1);
+        assert(text.indexOf(`${user.loginId}が2014/12/01に投稿`) !== -1);
+        assert(text.indexOf('<div class="panel-body"><p>test body</p>\n</div>') !== -1);
         done();
       }).catch(err => done(err));
     });
@@ -108,14 +109,14 @@ describe('item', function () {
         // 更新内容がDBに反映されているか
         return yield Item.findOne({ id: '1' }).exec();
       }).then(item => {
-        expect(item.title).to.equal('updated title');
-        expect(item.body).to.equal('updated body');
-        expect(item.tags).to.have.length(2);
-        expect(item.tags).to.contain('updated1');
-        expect(item.tags).to.contain('updated2');
-        expect(item.searchTags).to.have.length(2);
-        expect(item.searchTags).to.contain('updated1');
-        expect(item.searchTags).to.contain('updated2');
+        assert.equal(item.title, 'updated title');
+        assert.equal(item.body, 'updated body');
+        assert.equal(item.tags.length, 2);
+        assert(item.tags.indexOf('updated1') !== -1);
+        assert(item.tags.indexOf('updated2') !== -1);
+        assert.equal(item.searchTags.length, 2);
+        assert(item.searchTags.indexOf('updated1') !== -1);
+        assert(item.searchTags.indexOf('updated2') !== -1);
         done();
       }).catch(err => done(err));
     });
@@ -131,7 +132,7 @@ describe('item', function () {
           // エラーが発生した時はrejectを呼び出しているので,catchにいく.また戻りはない.
           yield superAgentPromise('/items/1/like', 'POST', null, new Map([['Cookie', cookie]]));
         } catch (e) {
-          expect(e.response.statusCode).to.equal(404);
+          assert.equal(e.response.statusCode, 404);
         }
         done();
       }).catch(err => done(err));
@@ -155,11 +156,12 @@ describe('item', function () {
         };
         yield Item.create(item);
         res = yield superAgentPromise('/items/1/like', 'POST', null, new Map([['Cookie', cookie]]));
-        expect(res.status).to.equal(200);
+        assert.equal(res.status, 200);
+
         return yield Item.findItem(1);
       }).then(item => {
-        expect(item.likes).to.contain(1);
-        expect(item.likes).have.length(1);
+        assert(item.likes.indexOf(1) !== -1);
+        assert.equal(item.likes.length, 1);
         done();
       }).catch(err => done(err));
     });
@@ -185,7 +187,7 @@ describe('item', function () {
         try {
           yield superAgentPromise('/items/1/like', 'POST');
         } catch (e) {
-          expect(e.response.statusCode).to.equal(403);
+          assert.equal(e.response.statusCode, 403);
         }
         done();
       }).catch(err => done(err));
