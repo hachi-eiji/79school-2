@@ -8,39 +8,12 @@
     "es6": true,
   },
   "rules": {
-    "strict": 0,
-    // use strictは許可 http://eslint.org/docs/rules/strict
-    "func-names": 0,
-    // 無名関数は許可 http://eslint.org/docs/rules/func-names
-    "space-before-function-paren": 0,
-    // functionの前にスペースは許可 http://eslint.org/docs/rules/space-before-function-paren
-    "id-length": [
-      2,
-      {
-        "min": 2,
-        "properties": "never",
-        "exceptions": [
-          "i",
-          "j",
-          "k",
-          "x",
-          "y",
-          "z"
-        ]
-      }
-    ],
-    // http://eslint.org/docs/rules/id-length
-    "indent": [
-      2,
-      2,
-      {
-        "SwitchCase": 1
-      }
-    ],
-    // http://eslint.org/docs/rules/indent
-    "callback-return": 2,
-    // http://eslint.org/docs/rules/callback-return
-    "handle-callback-err": 2,
-    // http://eslint.org/docs/rules/handle-callback-err
+    "strict": 0,                      // use strictは許可 http://eslint.org/docs/rules/strict
+    "func-names": 0,                  // 無名関数は許可 http://eslint.org/docs/rules/func-names
+    "space-before-function-paren":0,  // functionの前にスペースは許可 http://eslint.org/docs/rules/space-before-function-paren
+    "id-length": [2, {"min":2, "properties": "never", "exceptions": ["i", "j", "k", "x", "y", "z"]}], // http://eslint.org/docs/rules/id-length
+    "indent":[2, 2, {"SwitchCase": 1}], // http://eslint.org/docs/rules/indent
+    "callback-return":2 ,             // http://eslint.org/docs/rules/callback-return
+    "handle-callback-err":2,          // http://eslint.org/docs/rules/handle-callback-err
   }
 }
