@@ -66,7 +66,7 @@ schema.statics.search = function (condition, callback) {
   if (condition.limit) {
     query = query.limit(condition.limit);
   }
-  query.exec(callback);
+  return query.exec(callback);
 };
 
 schema.statics.findItem = function (id, callback) {
@@ -82,20 +82,13 @@ schema.statics.findItem = function (id, callback) {
  * @param {Function} callback - callback function
  */
 schema.statics.getTimeLine = function (query, sort, offset, limit, callback) {
-  const self = this;
-  async.waterfall([
-    function (next) {
-      const condition = {
-        offset: offset || 0,
-        limit: limit || 50,
-        query: query || {},
-        sort: sort || {updateAt: 'desc'},
-      };
-      self.search(condition, function (err, items) {
-        next(err, items);
-      });
-    },
-  ], callback);
+  const condition = {
+    offset: offset || 0,
+    limit: limit || 50,
+    query: query || {},
+    sort: sort || {updateAt: 'desc'},
+  };
+  return this.search(condition, callback);
 };
 
 module.exports = mongoose.model('Item', schema);

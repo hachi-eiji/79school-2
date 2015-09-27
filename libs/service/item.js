@@ -1,6 +1,6 @@
 'use strict';
 const _ = require('lodash');
-const async = require('async');
+const co = require('co');
 const crypto = require('crypto');
 const dateformat = require('dateformat');
 const Item = require('../../models').Item;
@@ -18,12 +18,9 @@ module.exports = {
     page = !page || page <= 0 ? 1 : page;
     const limit = LIMIT_PER_PAGE;
     const offset = (page - 1) * limit;
-    Item.getTimeLine({}, {
-      updateAt: 'desc',
-    }, offset, limit, (err, items) => {
-      if (err) {
-        return callback(err);
-      }
+
+    co(function* () {
+      const items = yield Item.getTimeLine({}, { updateAt: 'desc' }, offset, limit);
       const timeLine = [];
       _.forEach(items, (item) => {
         timeLine.push({
@@ -40,8 +37,9 @@ module.exports = {
           createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd'),
         });
       });
-      callback(null, timeLine);
-    });
+      return timeLine;
+    }).then((timeLine) => callback(null, timeLine))
+      .catch((err) => callback(err));
   },
 
   /**
@@ -49,14 +47,9 @@ module.exports = {
    * @param {string} id - item id
    */
   getItem: function(id, callback) {
-    Item.findItem(id, (err, item) => {
-      if (err) {
-        return callback(err);
-      }
-      if (!item) {
-        return callback();
-      }
-      const data = {
+    co(function* () {
+      const item = yield Item.findItem(id);
+      return {
         id: item.id,
         owner: item.owner,
         ownerId: item.ownerId,
@@ -66,8 +59,8 @@ module.exports = {
         createAt: dateformat(new Date(item.createAt), 'yyyy/mm/dd'),
         updateAt: dateformat(new Date(item.updateAt), 'yyyy/mm/dd'),
       };
-      callback(null, data);
-    });
+    }).then((item) => callback(null, item))
+      .catch((err) => callback(err));
   },
 
   /**
@@ -75,16 +68,11 @@ module.exports = {
    * @param {string} id - remove item
    */
   remove: function(id, callback) {
-    Item.remove({
-      id: id,
-    }, (err) => {
-      if (err) {
-        return callback(err);
-      }
-      Reply.remove({
-        itemId: id,
-      }, callback);
-    });
+    co(function* () {
+      yield Item.remove({ id });
+      return yield Reply.remove({ itemId: id });
+    }).then((result) => callback(null, result))
+      .catch((err) => callback(err));
   },
 
   /**
@@ -94,31 +82,16 @@ module.exports = {
    * @param {Function} callback - callback function
    */
   like: function(userId, id, callback) {
-    async.waterfall([
-
-      function(nextTask) {
-        Item.findItem(id, function(err, item) {
-          if (err) {
-            return nextTask(err);
-          }
-          if (!item) {
-            const _err = new Error('item not found');
-            _err.status = 404;
-            return nextTask(_err);
-          }
-          nextTask();
-        });
-      },
-      function(nextTask) {
-        Item.update({
-          id: id,
-        }, {
-          '$push': {
-            likes: userId,
-          },
-        }, nextTask);
-      },
-    ], callback);
+    co(function* () {
+      const item = yield Item.findItem(id);
+      if (!item) {
+        const _err = new Error('item not found');
+        _err.status = 404;
+        throw _err;
+      }
+      yield Item.update({ id }, { '$push': { likes: userId } });
+    }).then(() => callback())
+      .catch((err) => callback(err));
   },
 
   /**
@@ -143,13 +116,13 @@ module.exports = {
       searchTags.push(tags[i].toLowerCase());
     }
     const item = {
-      id: id,
+      id,
       ownerId: userId,
       owner: user._id,
       title,
       body,
       tags,
-      searchTags: searchTags,
+      searchTags,
     };
     Item.create(item, callback);
   },
@@ -160,14 +133,12 @@ module.exports = {
       searchTags.push(tags[i].toLowerCase());
     }
     const data = {
-      title: title,
-      body: body,
-      tags: tags,
-      searchTags: searchTags,
+      title,
+      body,
+      tags,
+      searchTags,
       updateAt: Date.now(),
     };
-    Item.update({
-      id: id,
-    }, data, callback);
+    Item.update({ id }, data, callback);
   },
 };

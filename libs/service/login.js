@@ -5,6 +5,7 @@
  */
 'use strict';
 const async = require('async');
+const co = require('co');
 const GitHubApi = require('../gitHubApi');
 const User = require('../../models').User;
 
@@ -23,37 +24,29 @@ function GitHubLogin(config) {
  */
 GitHubLogin.prototype.login = function (code, callback) {
   const gitHubApi = new GitHubApi(this.config);
-  async.waterfall([
+  const getGitHubUserPromise = new Promise((resolve, reject) => {
+    gitHubApi.getUser(code, (err, gitHubUser) => {
+      if (err) return reject(err);
+      if (!gitHubUser) return reject(new Error('can not get user'));
+      resolve(gitHubUser);
+    });
+  });
 
-    function (next) {
-      gitHubApi.getUser(code, (err, gitHubUser) => {
-        if (err) return next(err);
-        if (!gitHubUser) return callback(new Error('can not get user'));
-
-        return next(null, gitHubUser);
-      });
-    },
-    function (gitHubUser, next) {
-      User.findOne({
-        id: gitHubUser.id,
-      }, function (err, user) {
-        if (err) return next(err);
-        return next(null, gitHubUser, user);
-      });
-    },
-    function (gitHubUser, user, next) {
-      if (user) {
-        return next(null, user);
-      }
-      User.create({
+  co(function* () {
+    const gitHubUser = yield getGitHubUserPromise;
+    const user = yield User.findOne({ id: gitHubUser.id });
+    if (!user) {
+      yield User.create({
         id: gitHubUser.id,
         loginId: gitHubUser.login + '@github',
         accountType: 'github',
         name: gitHubUser.name,
         avatarUrl: gitHubUser.avatar_url,
-      }, next);
-    },
-  ], callback);
+      });
+    }
+    return user;
+  }).then((user) => callback(null, user))
+    .catch((err) => callback(err));
 };
 
 function LoginFactory() {
