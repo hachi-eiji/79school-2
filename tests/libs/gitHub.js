@@ -37,7 +37,7 @@ describe('libs/GitHubApi', function() {
     it('should get access token', function(done) {
       tester._getAccessToken('valid_code', function(err, token) {
         if (err) return done(err);
-        expect(token).to.eql('valid_token');
+        expect(token).to.eql('valid_tken');
         done();
       });
     });
